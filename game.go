@@ -18,7 +18,7 @@ var (
 
 func game(gtx Ctx, th *material.Theme) {
 
-	paint := func(gtx Ctx) Dim {
+	rolled := func(gtx Ctx) Dim {
 		in := layout.UniformInset(unit.Dp(16))
 		in.Top = unit.Dp(64)
 		return layout.Flex{
@@ -26,10 +26,10 @@ func game(gtx Ctx, th *material.Theme) {
 			Spacing:   layout.SpaceSides,
 		}.Layout(gtx,
 			layout.Rigid(func(gtx Ctx) Dim {
-				return in.Layout(gtx, widget.Image{Src: sprites[dice[0]], Scale: 1}.Layout)
+				return in.Layout(gtx, widget.Image{Src: sprites[dice[0]], Scale: 2}.Layout)
 			}),
 			layout.Rigid(func(gtx Ctx) Dim {
-				return in.Layout(gtx, widget.Image{Src: sprites[dice[1]], Scale: 1}.Layout)
+				return in.Layout(gtx, widget.Image{Src: sprites[dice[1]], Scale: 2}.Layout)
 			}),
 		)
 	}
@@ -97,7 +97,7 @@ func game(gtx Ctx, th *material.Theme) {
 			Axis:      layout.Vertical,
 			Alignment: layout.End,
 		}.Layout(gtx,
-			layout.Rigid(paint),
+			layout.Rigid(rolled),
 			layout.Flexed(1, text),
 			layout.Rigid(buttons),
 		)
