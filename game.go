@@ -38,36 +38,6 @@ func game(gtx *layout.Context, th *material.Theme) {
 		)
 	}
 
-	ödet := func() {
-		in := layout.UniformInset(unit.Dp(16))
-		in.Top = unit.Dp(64)
-		in.Bottom = unit.Dp(64)
-		layout.Flex{
-			Axis:      layout.Vertical,
-			Alignment: layout.Middle,
-			Spacing:   layout.SpaceSides,
-		}.Layout(gtx,
-			layout.Rigid(func() {
-				in.Layout(gtx, func() {
-					th.Label(bigFont, fmt.Sprintf("d1 = %04b", dice[0])).Layout(gtx)
-				})
-			}),
-			layout.Rigid(func() {
-				in.Layout(gtx, func() {
-					th.Label(bigFont, fmt.Sprintf("d2 = %04b", dice[1])).Layout(gtx)
-				})
-			}),
-		)
-	}
-
-	rolled := func() {
-		if !ödetmode {
-			paint()
-		} else {
-			ödet()
-		}
-	}
-
 	text := func() {
 		rolls := ""
 
@@ -130,7 +100,7 @@ func game(gtx *layout.Context, th *material.Theme) {
 			Axis:      layout.Vertical,
 			Alignment: layout.End,
 		}.Layout(gtx,
-			layout.Rigid(rolled),
+			layout.Rigid(paint),
 			layout.Flexed(1, text),
 			layout.Rigid(buttons),
 		)

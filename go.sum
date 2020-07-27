@@ -2,6 +2,7 @@ dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7
 gioui.org v0.0.0-20200211144101-e8add40440b3 h1:uj+91FcShlFt+vbypTPCxnzE8LfyyyNMFXQzfy0927o=
 gioui.org v0.0.0-20200211144101-e8add40440b3/go.mod h1:AHI9rFr6AEEHCb8EPVtb/p5M+NMJRKH58IOp8O3Je04=
 gioui.org v0.0.0-20200308095208-acfe91ec3e33 h1:6oglI31higZIdCj0uiI5L1C3XiagLn8pQsHdY9FrieQ=
+gioui.org v0.0.0-20200726090339-83673ecb203f h1:09YCGWJqqcRI/X3HEODsA/val03uLETNjTmQ/dUBSAY=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=

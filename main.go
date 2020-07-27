@@ -17,13 +17,11 @@ import (
 )
 
 var (
-	fontSize  = unit.Dp(32)
-	bigFont   = unit.Dp(45)
-	noButton  = new(widget.Button)
-	playing   = true
-	ödetmode  = false
-	ödetcount = make(chan time.Time, 7)
-	rolling   = false
+	fontSize = unit.Dp(32)
+	bigFont  = unit.Dp(45)
+	noButton = new(widget.Button)
+	playing  = true
+	rolling  = false
 
 	win     *app.Window
 	rules   = drules()
@@ -45,28 +43,6 @@ func main() {
 	d2Edit.SingleLine = true
 	nameEdit.Submit = true
 
-	for i := 0; i < 7; i++ {
-		ödetcount <- time.Now()
-	}
-
-	go func() {
-		i := 0
-		buff := [7]time.Time{}
-		for e := range ödetcount {
-			buff[i] = e
-			i++
-			i %= 7
-			//sleep för att inte cracha tråden
-			time.Sleep(time.Millisecond * 100)
-
-			if buff[6].Sub(buff[0]) >= time.Second && buff[6].Sub(buff[0]) < time.Second*2 {
-				ödetmode = !ödetmode
-				win.Invalidate()
-			}
-		}
-
-	}()
-
 	go func() {
 		win = app.NewWindow()
 		if err := loop(win); err != nil {
@@ -87,9 +63,7 @@ func loop(w *app.Window) error {
 		case system.DestroyEvent:
 			return e.Err
 		case *system.CommandEvent:
-			if e.Type == system.CommandBack && playing {
-				ödetcount <- time.Now()
-			} else if e.Type == system.CommandBack {
+			if e.Type == system.CommandBack {
 				playing = true
 			}
 			e.Cancel = true
