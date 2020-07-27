@@ -96,7 +96,7 @@ func saveRule() error {
 	}
 
 	var nrule Rule
-	if ruleRadio.Value == "sum" && d1 > 1 {
+	if ruleRadio.Value == "sum" && d1 > 1 && d1 < 13 {
 		nrule = SumRule{
 			Name: nameEdit.Text(),
 			Sum:  d1,
@@ -114,8 +114,7 @@ func saveRule() error {
 	} else {
 		return fmt.Errorf("Something goofed")
 	}
-	if nrule != nil {
-		rules = append(rules, nrule)
-	}
+
+	rules = append(rules, nrule)
 	return nil
 }
