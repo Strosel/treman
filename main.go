@@ -10,16 +10,23 @@ import (
 	"gioui.org/font/gofont"
 	"gioui.org/io/system"
 	"gioui.org/layout"
+	"gioui.org/op"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 )
 
+//Ctx is a helper alias for less wide code
+type Ctx = layout.Context
+
+//Dim is a helper alias for less wide code
+type Dim = layout.Dimensions
+
 var (
 	fontSize = unit.Dp(32)
 	bigFont  = unit.Dp(45)
-	noButton = new(widget.Button)
+	noButton = new(widget.Clickable)
 	playing  = true
 	rolling  = false
 
@@ -38,7 +45,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	gofont.Register()
 	d1Edit.SingleLine = true
 	d2Edit.SingleLine = true
 	nameEdit.Submit = true
@@ -54,9 +60,10 @@ func main() {
 }
 
 func loop(w *app.Window) error {
-	th := material.NewTheme()
+	th := material.NewTheme(gofont.Collection())
+	var ops op.Ops
+
 	th.TextSize = fontSize
-	gtx := layout.NewContext(w.Queue())
 	for {
 		e := <-w.Events()
 		switch e := e.(type) {
@@ -69,7 +76,7 @@ func loop(w *app.Window) error {
 			e.Cancel = true
 			w.Invalidate()
 		case system.FrameEvent:
-			gtx.Reset(e.Config, e.Size)
+			gtx := layout.NewContext(&ops, e)
 			if playing {
 				game(gtx, th)
 			} else {

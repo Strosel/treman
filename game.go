@@ -12,33 +12,29 @@ import (
 )
 
 var (
-	rollButton = new(widget.Button)
-	newButton  = new(widget.Button)
+	rollButton = new(widget.Clickable)
+	newButton  = new(widget.Clickable)
 )
 
-func game(gtx *layout.Context, th *material.Theme) {
+func game(gtx Ctx, th *material.Theme) {
 
-	paint := func() {
+	rolled := func(gtx Ctx) Dim {
 		in := layout.UniformInset(unit.Dp(16))
 		in.Top = unit.Dp(64)
-		layout.Flex{
+		return layout.Flex{
 			Alignment: layout.Middle,
 			Spacing:   layout.SpaceSides,
 		}.Layout(gtx,
-			layout.Rigid(func() {
-				in.Layout(gtx, func() {
-					th.Image(sprites[dice[0]]).Layout(gtx)
-				})
+			layout.Rigid(func(gtx Ctx) Dim {
+				return in.Layout(gtx, widget.Image{Src: sprites[dice[0]], Scale: 2}.Layout)
 			}),
-			layout.Rigid(func() {
-				in.Layout(gtx, func() {
-					th.Image(sprites[dice[1]]).Layout(gtx)
-				})
+			layout.Rigid(func(gtx Ctx) Dim {
+				return in.Layout(gtx, widget.Image{Src: sprites[dice[1]], Scale: 2}.Layout)
 			}),
 		)
 	}
 
-	text := func() {
+	text := func(gtx Ctx) Dim {
 		rolls := ""
 
 		if !rolling {
@@ -57,50 +53,49 @@ func game(gtx *layout.Context, th *material.Theme) {
 			}
 		}
 
-		lbl := th.Label(bigFont, rolls)
+		lbl := material.Label(th, bigFont, rolls)
 		lbl.Alignment = text.Middle
-		lbl.Layout(gtx)
+		return lbl.Layout(gtx)
 	}
 
-	buttons := func() {
+	buttons := func(gtx Ctx) Dim {
 		in := layout.UniformInset(unit.Dp(8))
-		layout.Flex{
+		return layout.Flex{
 			Axis:      layout.Vertical,
 			Alignment: layout.End,
 		}.Layout(gtx,
-			layout.Rigid(func() {
-				in.Layout(gtx, func() {
+			layout.Rigid(func(gtx Ctx) Dim {
+				return in.Layout(gtx, func(gtx Ctx) Dim {
 					if (SetRule{Set: Roll{6, 6}}.Valid(dice)) {
-						bttn := th.Button("\nNy Regel\n")
-						bttn.TextSize = fontSize
+						bttn := material.Button(th, newButton, "\nNy Regel\n")
 						bttn.Background = colornames.Mediumseagreen
-						for newButton.Clicked(gtx) {
+						for newButton.Clicked() {
 							playing = false
-							ruleRadio.SetValue("sum")
+							ruleRadio.Value = "sum"
 						}
-						bttn.Layout(gtx, newButton)
+						return bttn.Layout(gtx)
 					}
+					return Dim{}
 				})
 			}),
-			layout.Rigid(func() {
-				in.Layout(gtx, func() {
-					bttn := th.Button("\nRulla\n")
-					bttn.TextSize = fontSize
-					for rollButton.Clicked(gtx) {
+			layout.Rigid(func(gtx Ctx) Dim {
+				return in.Layout(gtx, func(gtx Ctx) Dim {
+					bttn := material.Button(th, rollButton, "\nRulla\n")
+					for rollButton.Clicked() {
 						go dice.AnimateRoll()
 					}
-					bttn.Layout(gtx, rollButton)
+					return bttn.Layout(gtx)
 				})
 			}),
 		)
 	}
 
-	layout.UniformInset(unit.Dp(8)).Layout(gtx, func() {
-		layout.Flex{
+	layout.UniformInset(unit.Dp(8)).Layout(gtx, func(gtx Ctx) Dim {
+		return layout.Flex{
 			Axis:      layout.Vertical,
 			Alignment: layout.End,
 		}.Layout(gtx,
-			layout.Rigid(paint),
+			layout.Rigid(rolled),
 			layout.Flexed(1, text),
 			layout.Rigid(buttons),
 		)
