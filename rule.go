@@ -82,7 +82,7 @@ func drules() []Rule {
 			Set:  Roll{1, 2},
 		},
 		SetRule{
-			Name: "Ein Führer",
+			Name: "En ferrari",
 			Set:  Roll{1, 4},
 		},
 		SetRule{
