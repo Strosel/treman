@@ -34,7 +34,6 @@ func addRule(gtx Ctx, th *material.Theme) {
 	}
 
 	rolls := func(gtx Ctx) Dim {
-		// edit.TextSize = fontSize
 		in := layout.UniformInset(unit.Dp(50))
 		return layout.Flex{
 			Alignment: layout.Middle,
@@ -60,7 +59,6 @@ func addRule(gtx Ctx, th *material.Theme) {
 
 	save := func(gtx Ctx) Dim {
 		bttn := material.Button(th, saveButton, "\nSpara\n")
-		bttn.TextSize = fontSize
 		for saveButton.Clicked() {
 			if saveRule() == nil {
 				playing = true

@@ -68,7 +68,6 @@ func game(gtx Ctx, th *material.Theme) {
 				return in.Layout(gtx, func(gtx Ctx) Dim {
 					if (SetRule{Set: Roll{6, 6}}.Valid(dice)) {
 						bttn := material.Button(th, newButton, "\nNy Regel\n")
-						bttn.TextSize = fontSize
 						bttn.Background = colornames.Mediumseagreen
 						for newButton.Clicked() {
 							playing = false
@@ -82,7 +81,6 @@ func game(gtx Ctx, th *material.Theme) {
 			layout.Rigid(func(gtx Ctx) Dim {
 				return in.Layout(gtx, func(gtx Ctx) Dim {
 					bttn := material.Button(th, rollButton, "\nRulla\n")
-					bttn.TextSize = fontSize
 					for rollButton.Clicked() {
 						go dice.AnimateRoll()
 					}
