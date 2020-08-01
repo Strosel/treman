@@ -13,7 +13,6 @@ import (
 	"gioui.org/op"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
-	"gioui.org/widget"
 	"gioui.org/widget/material"
 )
 
@@ -26,7 +25,6 @@ type Dim = layout.Dimensions
 var (
 	fontSize = unit.Dp(32)
 	bigFont  = unit.Dp(45)
-	noButton = new(widget.Clickable)
 	playing  = true
 	rolling  = false
 
