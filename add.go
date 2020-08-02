@@ -1,9 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"strconv"
-
 	"gioui.org/layout"
 	"gioui.org/unit"
 	"gioui.org/widget"
@@ -14,24 +11,22 @@ type addRule struct {
 	rules []Rule
 
 	ruleRadio *widget.Enum
-	d1Edit    *widget.Editor
-	d2Edit    *widget.Editor
+	d1        *diceButton
+	d2        *diceButton
 	nameEdit  *widget.Editor
 	saveClick *widget.Clickable
 }
 
-func addRuleScreen(rules []Rule) Screen {
+func addRuleScreen(th *material.Theme, rules []Rule) Screen {
 	a := &addRule{
 		rules:     rules,
 		ruleRadio: new(widget.Enum),
-		d1Edit:    new(widget.Editor),
-		d2Edit:    new(widget.Editor),
+		d1:        newDiceButton(th),
+		d2:        newDiceButton(th),
 		nameEdit:  new(widget.Editor),
 		saveClick: new(widget.Clickable),
 	}
 
-	a.d1Edit.SingleLine = true
-	a.d2Edit.SingleLine = true
 	a.ruleRadio.Value = "sum"
 
 	return a
@@ -56,14 +51,23 @@ func (a *addRule) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 
 	rolls := func(gtx Ctx) Dim {
 		in := layout.UniformInset(unit.Dp(50))
+		d2w := float32(0)
+		if a.ruleRadio.Value == "set" {
+			d2w = 1
+		}
 		return layout.Flex{
 			Alignment: layout.Middle,
 			Spacing:   layout.SpaceSides,
 		}.Layout(gtx,
-			RigidInset(in, material.Editor(th, a.d1Edit, "0").Layout),
-			RigidInset(in, func(gtx Ctx) Dim {
+			FlexedInset(in, 1, func(gtx Ctx) Dim {
+				if a.ruleRadio.Value == "sum" {
+					return a.d1.Layout(gtx, 2, 12)
+				}
+				return a.d1.Layout(gtx, 1, 6)
+			}),
+			FlexedInset(in, d2w, func(gtx Ctx) Dim {
 				if a.ruleRadio.Value == "set" {
-					return material.Editor(th, a.d2Edit, "0").Layout(gtx)
+					return a.d2.Layout(gtx, 1, 6)
 				}
 				return Dim{}
 			}),
@@ -72,15 +76,15 @@ func (a *addRule) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 
 	text := func(gtx Ctx) Dim {
 		edit := material.Editor(th, a.nameEdit, "Regel")
-		edit.TextSize = bigFont
+		edit.TextSize = material.H5(th, "").TextSize
 		return edit.Layout(gtx)
 	}
 
 	save := func(gtx Ctx) Dim {
 		saveBttn := material.Button(th, a.saveClick, "\nSpara\n")
 		for a.saveClick.Clicked() {
-			if a.saveRule() == nil {
-				nextScreen = gameScreen(a.rules)
+			if newRule := a.saveRule(); newRule != nil {
+				nextScreen = gameScreen(append(a.rules, newRule))
 			}
 		}
 		return saveBttn.Layout(gtx)
@@ -101,37 +105,25 @@ func (a *addRule) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 	return nextScreen
 }
 
-func (a *addRule) saveRule() error {
-	d1, err := strconv.Atoi(a.d1Edit.Text())
-	if err != nil {
-		return err
-	}
-	d2, err := strconv.Atoi(a.d2Edit.Text())
-	if err != nil && a.ruleRadio.Value == "set" {
-		return err
-	}
-
-	var nrule Rule
-	if a.ruleRadio.Value == "sum" && d1 > 1 && d1 < 13 {
-		nrule = SumRule{
+func (a *addRule) saveRule() Rule {
+	switch a.ruleRadio.Value {
+	case "sum":
+		return SumRule{
 			Name: a.nameEdit.Text(),
-			Sum:  d1,
+			Sum:  a.d1.val,
 		}
-	} else if a.ruleRadio.Value == "set" && d1 > 0 && d1 < 7 && d2 > 0 && d2 < 7 {
-		nrule = SetRule{
+	case "set":
+		return SetRule{
 			Name: a.nameEdit.Text(),
-			Set:  Roll{d1, d2},
+			Set:  Roll{a.d1.val, a.d2.val},
 		}
-	} else if a.ruleRadio.Value == "single" && d1 > 0 && d1 < 7 {
-		nrule = SingleRule{
+	case "single":
+		return SingleRule{
 			Name: a.nameEdit.Text(),
-			Dice: d1,
+			Dice: a.d1.val,
 		}
-	} else {
-		return fmt.Errorf("Something goofed")
 	}
 
-	a.rules = append(a.rules, nrule)
 	return nil
 }
 

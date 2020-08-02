@@ -15,9 +15,9 @@ func (r *Roll) Roll() {
 func (r *Roll) Animate() {
 	a, b := r[0], r[1]
 	for i := 7; i < 15; i++ {
-		r[0], r[1] = i, i
+		r[0], r[1] = rand.Intn(6)+7, rand.Intn(6)+7
 		win.Invalidate()
-		time.Sleep(time.Millisecond * 50)
+		time.Sleep(time.Millisecond * 100)
 	}
 	r[0], r[1] = a, b
 	win.Invalidate()

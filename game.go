@@ -33,13 +33,14 @@ func (g *game) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 	rolled := func(gtx Ctx) Dim {
 		in := layout.UniformInset(unit.Dp(16))
 		in.Top = unit.Dp(64)
-		return layout.Flex{
-			Alignment: layout.Middle,
-			Spacing:   layout.SpaceSides,
-		}.Layout(gtx,
-			RigidInset(in, widget.Image{Src: sprites[g.dice[0]], Scale: 2}.Layout),
-			RigidInset(in, widget.Image{Src: sprites[g.dice[1]], Scale: 2}.Layout),
-		)
+		dice := material.H2(th, fmt.Sprintf("%v %v", g.dice[0], g.dice[1]))
+		dice.Alignment = text.Middle
+		dice.Font.Variant = "Dice"
+		if g.dice[0] > 6 {
+			dice.Color = colornames.Rosybrown
+			dice.Text = fmt.Sprintf("%v %v", (g.dice[0]%6)+1, (g.dice[1]%6)+1)
+		}
+		return in.Layout(gtx, dice.Layout)
 	}
 
 	text := func(gtx Ctx) Dim {
@@ -61,7 +62,7 @@ func (g *game) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 			}
 		}
 
-		lbl := material.Label(th, bigFont, rolls)
+		lbl := material.H5(th, rolls)
 		lbl.Alignment = text.Middle
 		return lbl.Layout(gtx)
 	}
@@ -78,7 +79,7 @@ func (g *game) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 
 				if (SetRule{Set: Roll{6, 6}}.Valid(g.dice)) {
 					for g.newClick.Clicked() {
-						nextScreen = addRuleScreen(g.rules)
+						nextScreen = addRuleScreen(th, g.rules)
 					}
 					return newBttn.Layout(gtx)
 				}

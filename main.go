@@ -7,35 +7,34 @@ import (
 	"time"
 
 	"gioui.org/app"
-	"gioui.org/font/gofont"
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
-	"gioui.org/op/paint"
 	"gioui.org/unit"
 	"gioui.org/widget/material"
 )
 
 var (
 	fontSize = unit.Dp(32)
-	bigFont  = unit.Dp(45)
 
-	win     *app.Window
-	sprites []paint.ImageOp
-	err     error
+	win *app.Window
+	err error
 )
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
-	sprites, err = loadSprites()
+	font, err := loadFont()
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	th := material.NewTheme(font)
+	th.TextSize = fontSize
+
 	go func() {
 		win = app.NewWindow()
-		if err := loop(win); err != nil {
+		if err := loop(win, th); err != nil {
 			log.Fatal(err)
 		}
 	}()
@@ -43,10 +42,7 @@ func main() {
 	app.Main()
 }
 
-func loop(w *app.Window) error {
-	th := material.NewTheme(gofont.Collection())
-	th.TextSize = fontSize
-
+func loop(w *app.Window, th *material.Theme) error {
 	var ops op.Ops
 
 	screen := gameScreen(drules())
