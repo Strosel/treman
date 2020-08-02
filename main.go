@@ -25,12 +25,9 @@ type Dim = layout.Dimensions
 var (
 	fontSize = unit.Dp(32)
 	bigFont  = unit.Dp(45)
-	playing  = true
 	rolling  = false
 
 	win     *app.Window
-	rules   = drules()
-	dice    Roll
 	sprites []paint.ImageOp
 	err     error
 )
@@ -42,10 +39,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	d1Edit.SingleLine = true
-	d2Edit.SingleLine = true
-	nameEdit.Submit = true
 
 	go func() {
 		win = app.NewWindow()
@@ -59,9 +52,11 @@ func main() {
 
 func loop(w *app.Window) error {
 	th := material.NewTheme(gofont.Collection())
+	th.TextSize = fontSize
+
 	var ops op.Ops
 
-	th.TextSize = fontSize
+	screen := gameScreen(drules())
 	for {
 		e := <-w.Events()
 		switch e := e.(type) {
@@ -69,17 +64,13 @@ func loop(w *app.Window) error {
 			return e.Err
 		case *system.CommandEvent:
 			if e.Type == system.CommandBack {
-				playing = true
+				screen = gameScreen(screen.Rules())
 			}
 			e.Cancel = true
 			w.Invalidate()
 		case system.FrameEvent:
 			gtx := layout.NewContext(&ops, e)
-			if playing {
-				game(gtx, th)
-			} else {
-				addRule(gtx, th)
-			}
+			screen = screen.Layout(gtx, th)
 			e.Frame(gtx.Ops)
 		}
 	}

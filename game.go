@@ -11,12 +11,24 @@ import (
 	"golang.org/x/image/colornames"
 )
 
-var (
-	rollButton = new(widget.Clickable)
-	newButton  = new(widget.Clickable)
-)
+type game struct {
+	dice  Roll
+	rules []Rule
 
-func game(gtx Ctx, th *material.Theme) {
+	rollClick *widget.Clickable
+	newClick  *widget.Clickable
+}
+
+func gameScreen(rules []Rule) Screen {
+	return &game{
+		rules:     rules,
+		rollClick: new(widget.Clickable),
+		newClick:  new(widget.Clickable),
+	}
+}
+
+func (g *game) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
+	nextScreen = g
 
 	rolled := func(gtx Ctx) Dim {
 		in := layout.UniformInset(unit.Dp(16))
@@ -25,12 +37,8 @@ func game(gtx Ctx, th *material.Theme) {
 			Alignment: layout.Middle,
 			Spacing:   layout.SpaceSides,
 		}.Layout(gtx,
-			layout.Rigid(func(gtx Ctx) Dim {
-				return in.Layout(gtx, widget.Image{Src: sprites[dice[0]], Scale: 2}.Layout)
-			}),
-			layout.Rigid(func(gtx Ctx) Dim {
-				return in.Layout(gtx, widget.Image{Src: sprites[dice[1]], Scale: 2}.Layout)
-			}),
+			RigidInset(in, widget.Image{Src: sprites[g.dice[0]], Scale: 2}.Layout),
+			RigidInset(in, widget.Image{Src: sprites[g.dice[1]], Scale: 2}.Layout),
 		)
 	}
 
@@ -38,8 +46,8 @@ func game(gtx Ctx, th *material.Theme) {
 		rolls := ""
 
 		if !rolling {
-			for _, r := range rules {
-				if r.Valid(dice) {
+			for _, r := range g.rules {
+				if r.Valid(g.dice) {
 					if len(rolls) == 0 {
 						rolls += r.String()
 					} else {
@@ -64,28 +72,24 @@ func game(gtx Ctx, th *material.Theme) {
 			Axis:      layout.Vertical,
 			Alignment: layout.End,
 		}.Layout(gtx,
-			layout.Rigid(func(gtx Ctx) Dim {
-				return in.Layout(gtx, func(gtx Ctx) Dim {
-					if (SetRule{Set: Roll{6, 6}}.Valid(dice)) {
-						bttn := material.Button(th, newButton, "\nNy Regel\n")
-						bttn.Background = colornames.Mediumseagreen
-						for newButton.Clicked() {
-							playing = false
-							ruleRadio.Value = "sum"
-						}
-						return bttn.Layout(gtx)
+			RigidInset(in, func(gtx Ctx) Dim {
+				newBttn := material.Button(th, g.newClick, "\nNy Regel\n")
+				newBttn.Background = colornames.Mediumseagreen
+
+				if (SetRule{Set: Roll{6, 6}}.Valid(g.dice)) {
+					for g.newClick.Clicked() {
+						nextScreen = addRuleScreen(g.rules)
 					}
-					return Dim{}
-				})
+					return newBttn.Layout(gtx)
+				}
+				return Dim{}
 			}),
-			layout.Rigid(func(gtx Ctx) Dim {
-				return in.Layout(gtx, func(gtx Ctx) Dim {
-					bttn := material.Button(th, rollButton, "\nRulla\n")
-					for rollButton.Clicked() {
-						go dice.AnimateRoll()
-					}
-					return bttn.Layout(gtx)
-				})
+			RigidInset(in, func(gtx Ctx) Dim {
+				rollBttn := material.Button(th, g.rollClick, "\nRulla\n")
+				for g.rollClick.Clicked() {
+					go g.dice.AnimateRoll()
+				}
+				return rollBttn.Layout(gtx)
 			}),
 		)
 	}
@@ -100,4 +104,10 @@ func game(gtx Ctx, th *material.Theme) {
 			layout.Rigid(buttons),
 		)
 	})
+
+	return nextScreen
+}
+
+func (g *game) Rules() []Rule {
+	return g.rules
 }
