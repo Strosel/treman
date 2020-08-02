@@ -45,7 +45,7 @@ func (g *game) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 	text := func(gtx Ctx) Dim {
 		rolls := ""
 
-		if !rolling {
+		if g.dice[0] < 7 {
 			for _, r := range g.rules {
 				if r.Valid(g.dice) {
 					if len(rolls) == 0 {

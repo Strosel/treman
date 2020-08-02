@@ -16,16 +16,9 @@ import (
 	"gioui.org/widget/material"
 )
 
-//Ctx is a helper alias for less wide code
-type Ctx = layout.Context
-
-//Dim is a helper alias for less wide code
-type Dim = layout.Dimensions
-
 var (
 	fontSize = unit.Dp(32)
 	bigFont  = unit.Dp(45)
-	rolling  = false
 
 	win     *app.Window
 	sprites []paint.ImageOp

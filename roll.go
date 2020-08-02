@@ -13,7 +13,6 @@ func (r *Roll) Roll() {
 }
 
 func (r *Roll) Animate() {
-	rolling = true
 	a, b := r[0], r[1]
 	for i := 7; i < 15; i++ {
 		r[0], r[1] = i, i
@@ -21,7 +20,6 @@ func (r *Roll) Animate() {
 		time.Sleep(time.Millisecond * 50)
 	}
 	r[0], r[1] = a, b
-	rolling = false
 	win.Invalidate()
 }
 
