@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"image/color"
 
 	"gioui.org/layout"
 	"gioui.org/text"
@@ -17,6 +18,7 @@ type game struct {
 
 	rollClick *widget.Clickable
 	newClick  *widget.Clickable
+	ruleClick *widget.Clickable
 }
 
 func gameScreen(rules []Rule) Screen {
@@ -24,6 +26,7 @@ func gameScreen(rules []Rule) Screen {
 		rules:     rules,
 		rollClick: new(widget.Clickable),
 		newClick:  new(widget.Clickable),
+		ruleClick: new(widget.Clickable),
 	}
 }
 
@@ -31,16 +34,37 @@ func (g *game) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 	nextScreen = g
 
 	rolled := func(gtx Ctx) Dim {
-		in := layout.UniformInset(unit.Dp(16))
-		in.Top = unit.Dp(64)
-		dice := material.H2(th, fmt.Sprintf("%v %v", g.dice[0], g.dice[1]))
-		dice.Alignment = text.Middle
-		dice.Font.Variant = "Dice"
-		if g.dice[0] > 6 {
-			dice.Color = colornames.Rosybrown
-			dice.Text = fmt.Sprintf("%v %v", (g.dice[0]%6)+1, (g.dice[1]%6)+1)
-		}
-		return in.Layout(gtx, dice.Layout)
+		return layout.Flex{
+			Axis: layout.Vertical,
+		}.Layout(gtx,
+			layout.Rigid(func(gtx Ctx) Dim {
+				return layout.Flex{
+					Spacing: layout.SpaceStart,
+				}.Layout(gtx,
+					layout.Rigid(func(gtx Ctx) Dim {
+						bttn := material.Button(th, g.ruleClick, "?")
+						bttn.Color = colornames.Black
+						bttn.Background = color.RGBA{255, 255, 255, 255}
+
+						for g.ruleClick.Clicked() {
+							nextScreen = viewRulesScreen(g.rules)
+						}
+
+						return bttn.Layout(gtx)
+					}),
+				)
+			}),
+			RigidInset(layout.UniformInset(unit.Dp(16)), func(gtx Ctx) Dim {
+				dice := material.H2(th, fmt.Sprintf("%v %v", g.dice[0], g.dice[1]))
+				dice.Alignment = text.Middle
+				dice.Font.Variant = "Dice"
+				if g.dice[0] > 6 {
+					dice.Color = colornames.Rosybrown
+					dice.Text = fmt.Sprintf("%v %v", (g.dice[0]%6)+1, (g.dice[1]%6)+1)
+				}
+				return dice.Layout(gtx)
+			}),
+		)
 	}
 
 	text := func(gtx Ctx) Dim {
