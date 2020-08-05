@@ -111,7 +111,7 @@ func (g *game) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 			}),
 			RigidInset(in, func(gtx Ctx) Dim {
 				rollBttn := material.Button(th, g.rollClick, "\nRulla\n")
-				for g.rollClick.Clicked() {
+				for g.rollClick.Clicked() && g.dice[0] < 7 {
 					go g.dice.AnimateRoll()
 				}
 				return rollBttn.Layout(gtx)
