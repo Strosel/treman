@@ -37,7 +37,7 @@ func (g *game) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 		return layout.Flex{
 			Axis: layout.Vertical,
 		}.Layout(gtx,
-			layout.Rigid(func(gtx Ctx) Dim {
+			RigidInset(layout.Inset{Top: unit.Dp(16)}, func(gtx Ctx) Dim {
 				return layout.Flex{
 					Spacing: layout.SpaceStart,
 				}.Layout(gtx,

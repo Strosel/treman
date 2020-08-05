@@ -33,11 +33,18 @@ func (sr SumRule) Widget(th *material.Theme) func(gtx Ctx) Dim {
 		dice := material.Body1(th, fmt.Sprint(0))
 		dice.Font.Variant = "Dice"
 
-		return layout.Flex{}.Layout(gtx,
-			layout.Rigid(dice.Layout),
-			layout.Rigid(material.Body1(th, " + ").Layout),
-			layout.Rigid(dice.Layout),
-			layout.Rigid(material.Body1(th, fmt.Sprintf(" = %v\t%v\n%v", sr.Sum, sr.Name, sr.Desc)).Layout),
+		return layout.Flex{
+			Axis: layout.Vertical,
+		}.Layout(gtx,
+			layout.Rigid(func(gtx Ctx) Dim {
+				return layout.Flex{}.Layout(gtx,
+					layout.Rigid(dice.Layout),
+					layout.Rigid(material.Body1(th, " + ").Layout),
+					layout.Rigid(dice.Layout),
+					layout.Rigid(material.Body1(th, fmt.Sprintf(" = %v\t%v", sr.Sum, sr.Name)).Layout),
+				)
+			}),
+			layout.Rigid(material.Body1(th, sr.Desc).Layout),
 		)
 	}
 }
@@ -63,9 +70,16 @@ func (sr SetRule) Widget(th *material.Theme) func(gtx Ctx) Dim {
 		dice := material.Body1(th, fmt.Sprint(sr.Set[0], sr.Set[1]))
 		dice.Font.Variant = "Dice"
 
-		return layout.Flex{}.Layout(gtx,
-			layout.Rigid(dice.Layout),
-			layout.Rigid(material.Body1(th, fmt.Sprintf("\t%v\n%v", sr.Name, sr.Desc)).Layout),
+		return layout.Flex{
+			Axis: layout.Vertical,
+		}.Layout(gtx,
+			layout.Rigid(func(gtx Ctx) Dim {
+				return layout.Flex{}.Layout(gtx,
+					layout.Rigid(dice.Layout),
+					layout.Rigid(material.Body1(th, fmt.Sprintf("\t%v", sr.Name)).Layout),
+				)
+			}),
+			layout.Rigid(material.Body1(th, sr.Desc).Layout),
 		)
 	}
 }
@@ -89,9 +103,16 @@ func (sr SingleRule) Widget(th *material.Theme) func(gtx Ctx) Dim {
 		dice := material.Body1(th, fmt.Sprint(sr.Dice))
 		dice.Font.Variant = "Dice"
 
-		return layout.Flex{}.Layout(gtx,
-			layout.Rigid(dice.Layout),
-			layout.Rigid(material.Body1(th, fmt.Sprintf("\t%v\n%v", sr.Name, sr.Desc)).Layout),
+		return layout.Flex{
+			Axis: layout.Vertical,
+		}.Layout(gtx,
+			layout.Rigid(func(gtx Ctx) Dim {
+				return layout.Flex{}.Layout(gtx,
+					layout.Rigid(dice.Layout),
+					layout.Rigid(material.Body1(th, fmt.Sprintf("\t%v", sr.Name)).Layout),
+				)
+			}),
+			layout.Rigid(material.Body1(th, sr.Desc).Layout),
 		)
 	}
 }

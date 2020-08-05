@@ -16,7 +16,7 @@ När en ny person blir treman skålar denne med gammla treman och bägge dricker
 
 När treman valts börjar en spelare slå tärningarna och följer instruktionerna som tillhör vad de slagit (se nedan). Samma spelare fortsätter slå tärningarna tills de får "Ingenting", dvs. ett slag utan tillhörande regel, och då skickas tärningarna vidare medsols.
 
-Formatet n+n klunkar betyder att n st klunkar får delas ut till två personer eller dubbelt så mycket till en person`
+n+n klunkar betyder att n st klunkar får delas ut till två personer eller dubbelt så mycket till en person`
 
 type viewRules struct {
 	rules []Rule
@@ -36,14 +36,15 @@ func viewRulesScreen(rules []Rule) Screen {
 func (v *viewRules) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 	nextScreen = v
 
-	th.TextSize = unit.Dp(24)
 	layout.UniformInset(unit.Dp(8)).Layout(gtx, func(gtx Ctx) Dim {
 		return v.list.Layout(gtx, len(v.rules)+2, func(gtx Ctx, i int) Dim {
 			return layout.UniformInset(unit.Dp(16)).Layout(gtx, func(gtx Ctx) Dim {
 				if i == 0 {
-					return material.H4(th, "Regler").Layout(gtx)
+					return layout.Inset{Top: unit.Dp(16)}.Layout(gtx, material.H6(th, "Regler").Layout)
 				} else if i == 1 {
-					return material.Body1(th, baserules).Layout(gtx)
+					body := material.Body1(th, baserules)
+					body.TextSize = unit.Dp(24)
+					return body.Layout(gtx)
 				}
 				return v.rules[i-2].Widget(th)(gtx)
 			})
