@@ -1,24 +1,40 @@
 package main
 
 import (
-	"fmt"
-	"strconv"
-
 	"gioui.org/layout"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 )
 
-var (
-	ruleRadio  = new(widget.Enum)
-	d1Edit     = new(widget.Editor)
-	d2Edit     = new(widget.Editor)
-	nameEdit   = new(widget.Editor)
-	saveButton = new(widget.Clickable)
-)
+type addRule struct {
+	rules []Rule
 
-func addRule(gtx Ctx, th *material.Theme) {
+	ruleRadio *widget.Enum
+	d1        *diceButton
+	d2        *diceButton
+	nameEdit  *widget.Editor
+	saveClick *widget.Clickable
+}
+
+func addRuleScreen(th *material.Theme, rules []Rule) Screen {
+	a := &addRule{
+		rules:     rules,
+		ruleRadio: new(widget.Enum),
+		d1:        newDiceButton(th),
+		d2:        newDiceButton(th),
+		nameEdit:  new(widget.Editor),
+		saveClick: new(widget.Clickable),
+	}
+
+	a.ruleRadio.Value = "sum"
+
+	return a
+}
+
+func (a *addRule) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
+	nextScreen = a
+
 	radio := func(gtx Ctx) Dim {
 		in := layout.UniformInset(unit.Dp(0))
 		in.Top = unit.Dp(64)
@@ -26,25 +42,32 @@ func addRule(gtx Ctx, th *material.Theme) {
 			return layout.Flex{
 				Spacing: layout.SpaceAround,
 			}.Layout(gtx,
-				layout.Rigid(material.RadioButton(th, ruleRadio, "sum", "Summa").Layout),
-				layout.Rigid(material.RadioButton(th, ruleRadio, "set", "Par").Layout),
-				layout.Rigid(material.RadioButton(th, ruleRadio, "single", "En tärning").Layout),
+				layout.Rigid(material.RadioButton(th, a.ruleRadio, "sum", "Summa").Layout),
+				layout.Rigid(material.RadioButton(th, a.ruleRadio, "set", "Par").Layout),
+				layout.Rigid(material.RadioButton(th, a.ruleRadio, "single", "En tärning").Layout),
 			)
 		})
 	}
 
 	rolls := func(gtx Ctx) Dim {
 		in := layout.UniformInset(unit.Dp(50))
+		d2w := float32(0)
+		if a.ruleRadio.Value == "set" {
+			d2w = 1
+		}
 		return layout.Flex{
 			Alignment: layout.Middle,
 			Spacing:   layout.SpaceSides,
 		}.Layout(gtx,
-			layout.Rigid(func(gtx Ctx) Dim {
-				return in.Layout(gtx, material.Editor(th, d1Edit, "0").Layout)
+			FlexedInset(in, 1, func(gtx Ctx) Dim {
+				if a.ruleRadio.Value == "sum" {
+					return a.d1.Layout(gtx, 2, 12)
+				}
+				return a.d1.Layout(gtx, 1, 6)
 			}),
-			layout.Rigid(func(gtx Ctx) Dim {
-				if ruleRadio.Value == "set" {
-					return in.Layout(gtx, material.Editor(th, d2Edit, "0").Layout)
+			FlexedInset(in, d2w, func(gtx Ctx) Dim {
+				if a.ruleRadio.Value == "set" {
+					return a.d2.Layout(gtx, 1, 6)
 				}
 				return Dim{}
 			}),
@@ -52,22 +75,19 @@ func addRule(gtx Ctx, th *material.Theme) {
 	}
 
 	text := func(gtx Ctx) Dim {
-		edit := material.Editor(th, nameEdit, "Regel")
-		edit.TextSize = bigFont
+		edit := material.Editor(th, a.nameEdit, "Regel")
+		edit.TextSize = material.H5(th, "").TextSize
 		return edit.Layout(gtx)
 	}
 
 	save := func(gtx Ctx) Dim {
-		bttn := material.Button(th, saveButton, "\nSpara\n")
-		for saveButton.Clicked() {
-			if saveRule() == nil {
-				playing = true
-				d1Edit.SetText("")
-				d2Edit.SetText("")
-				nameEdit.SetText("")
+		saveBttn := material.Button(th, a.saveClick, "\nSpara\n")
+		for a.saveClick.Clicked() {
+			if newRule := a.saveRule(); newRule != nil {
+				nextScreen = gameScreen(append(a.rules, newRule))
 			}
 		}
-		return bttn.Layout(gtx)
+		return saveBttn.Layout(gtx)
 	}
 
 	layout.UniformInset(unit.Dp(8)).Layout(gtx, func(gtx Ctx) Dim {
@@ -81,38 +101,32 @@ func addRule(gtx Ctx, th *material.Theme) {
 			layout.Rigid(save),
 		)
 	})
+
+	return nextScreen
 }
 
-func saveRule() error {
-	d1, err := strconv.Atoi(d1Edit.Text())
-	if err != nil {
-		return err
-	}
-	d2, err := strconv.Atoi(d2Edit.Text())
-	if err != nil && ruleRadio.Value == "set" {
-		return err
-	}
-
-	var nrule Rule
-	if ruleRadio.Value == "sum" && d1 > 1 && d1 < 13 {
-		nrule = SumRule{
-			Name: nameEdit.Text(),
-			Sum:  d1,
+func (a *addRule) saveRule() Rule {
+	switch a.ruleRadio.Value {
+	case "sum":
+		return SumRule{
+			Name: a.nameEdit.Text(),
+			Sum:  a.d1.val,
 		}
-	} else if ruleRadio.Value == "set" && d1 > 0 && d1 < 7 && d2 > 0 && d2 < 7 {
-		nrule = SetRule{
-			Name: nameEdit.Text(),
-			Set:  Roll{d1, d2},
+	case "set":
+		return SetRule{
+			Name: a.nameEdit.Text(),
+			Set:  Roll{a.d1.val, a.d2.val},
 		}
-	} else if ruleRadio.Value == "single" && d1 > 0 && d1 < 7 {
-		nrule = SingleRule{
-			Name: nameEdit.Text(),
-			Dice: d1,
+	case "single":
+		return SingleRule{
+			Name: a.nameEdit.Text(),
+			Dice: a.d1.val,
 		}
-	} else {
-		return fmt.Errorf("Something goofed")
 	}
 
-	rules = append(rules, nrule)
 	return nil
+}
+
+func (a *addRule) Rules() []Rule {
+	return a.rules
 }

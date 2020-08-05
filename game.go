@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"image/color"
 
 	"gioui.org/layout"
 	"gioui.org/text"
@@ -11,25 +12,57 @@ import (
 	"golang.org/x/image/colornames"
 )
 
-var (
-	rollButton = new(widget.Clickable)
-	newButton  = new(widget.Clickable)
-)
+type game struct {
+	dice  Roll
+	rules []Rule
 
-func game(gtx Ctx, th *material.Theme) {
+	rollClick *widget.Clickable
+	newClick  *widget.Clickable
+	ruleClick *widget.Clickable
+}
+
+func gameScreen(rules []Rule) Screen {
+	return &game{
+		rules:     rules,
+		rollClick: new(widget.Clickable),
+		newClick:  new(widget.Clickable),
+		ruleClick: new(widget.Clickable),
+	}
+}
+
+func (g *game) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
+	nextScreen = g
 
 	rolled := func(gtx Ctx) Dim {
-		in := layout.UniformInset(unit.Dp(16))
-		in.Top = unit.Dp(64)
 		return layout.Flex{
-			Alignment: layout.Middle,
-			Spacing:   layout.SpaceSides,
+			Axis: layout.Vertical,
 		}.Layout(gtx,
-			layout.Rigid(func(gtx Ctx) Dim {
-				return in.Layout(gtx, widget.Image{Src: sprites[dice[0]], Scale: 2}.Layout)
+			RigidInset(layout.Inset{Top: unit.Dp(16)}, func(gtx Ctx) Dim {
+				return layout.Flex{
+					Spacing: layout.SpaceStart,
+				}.Layout(gtx,
+					layout.Rigid(func(gtx Ctx) Dim {
+						bttn := material.Button(th, g.ruleClick, "?")
+						bttn.Color = colornames.Black
+						bttn.Background = color.RGBA{255, 255, 255, 255}
+
+						for g.ruleClick.Clicked() {
+							nextScreen = viewRulesScreen(g.rules)
+						}
+
+						return bttn.Layout(gtx)
+					}),
+				)
 			}),
-			layout.Rigid(func(gtx Ctx) Dim {
-				return in.Layout(gtx, widget.Image{Src: sprites[dice[1]], Scale: 2}.Layout)
+			RigidInset(layout.UniformInset(unit.Dp(16)), func(gtx Ctx) Dim {
+				dice := material.H2(th, fmt.Sprintf("%v %v", g.dice[0], g.dice[1]))
+				dice.Alignment = text.Middle
+				dice.Font.Variant = "Dice"
+				if g.dice[0] > 6 {
+					dice.Color = colornames.Rosybrown
+					dice.Text = fmt.Sprintf("%v %v", (g.dice[0]%6)+1, (g.dice[1]%6)+1)
+				}
+				return dice.Layout(gtx)
 			}),
 		)
 	}
@@ -37,9 +70,9 @@ func game(gtx Ctx, th *material.Theme) {
 	text := func(gtx Ctx) Dim {
 		rolls := ""
 
-		if !rolling {
-			for _, r := range rules {
-				if r.Valid(dice) {
+		if g.dice[0] < 7 {
+			for _, r := range g.rules {
+				if r.Valid(g.dice) {
 					if len(rolls) == 0 {
 						rolls += r.String()
 					} else {
@@ -53,7 +86,7 @@ func game(gtx Ctx, th *material.Theme) {
 			}
 		}
 
-		lbl := material.Label(th, bigFont, rolls)
+		lbl := material.H5(th, rolls)
 		lbl.Alignment = text.Middle
 		return lbl.Layout(gtx)
 	}
@@ -64,28 +97,24 @@ func game(gtx Ctx, th *material.Theme) {
 			Axis:      layout.Vertical,
 			Alignment: layout.End,
 		}.Layout(gtx,
-			layout.Rigid(func(gtx Ctx) Dim {
-				return in.Layout(gtx, func(gtx Ctx) Dim {
-					if (SetRule{Set: Roll{6, 6}}.Valid(dice)) {
-						bttn := material.Button(th, newButton, "\nNy Regel\n")
-						bttn.Background = colornames.Mediumseagreen
-						for newButton.Clicked() {
-							playing = false
-							ruleRadio.Value = "sum"
-						}
-						return bttn.Layout(gtx)
+			RigidInset(in, func(gtx Ctx) Dim {
+				newBttn := material.Button(th, g.newClick, "\nNy Regel\n")
+				newBttn.Background = colornames.Mediumseagreen
+
+				if (SetRule{Set: Roll{6, 6}}.Valid(g.dice)) {
+					for g.newClick.Clicked() {
+						nextScreen = addRuleScreen(th, g.rules)
 					}
-					return Dim{}
-				})
+					return newBttn.Layout(gtx)
+				}
+				return Dim{}
 			}),
-			layout.Rigid(func(gtx Ctx) Dim {
-				return in.Layout(gtx, func(gtx Ctx) Dim {
-					bttn := material.Button(th, rollButton, "\nRulla\n")
-					for rollButton.Clicked() {
-						go dice.AnimateRoll()
-					}
-					return bttn.Layout(gtx)
-				})
+			RigidInset(in, func(gtx Ctx) Dim {
+				rollBttn := material.Button(th, g.rollClick, "\nRulla\n")
+				for g.rollClick.Clicked() && g.dice[0] < 7 {
+					go g.dice.AnimateRoll()
+				}
+				return rollBttn.Layout(gtx)
 			}),
 		)
 	}
@@ -100,4 +129,10 @@ func game(gtx Ctx, th *material.Theme) {
 			layout.Rigid(buttons),
 		)
 	})
+
+	return nextScreen
+}
+
+func (g *game) Rules() []Rule {
+	return g.rules
 }
