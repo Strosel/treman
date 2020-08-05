@@ -6,7 +6,9 @@ import (
 	"gioui.org/widget/material"
 )
 
-var baserules = `Först väljs en spelare till treman, detta är en titel som kommer förflytta sig under spelets gång. Titeln treman förflyttas till en ny spelare vid ett av följande tillfällen:
+var baserules = `Först väljs en spelare till treman, detta är en titel som kommer förflytta sig under spelets gång. 
+
+Titeln treman förflyttas till en ny spelare vid ett av följande tillfällen:
 • Om en person går med i spelet efter start är denne nu treman.
 • Om en splare lämnar bordet och kommer tillbaks (oftast för att hämta mer dricka) är denne nu treman.
 • Vid vissa tärningsslag blir antingen den som slagit tärningarna eller en annan spelare ny treman. (se nedan)
@@ -34,6 +36,7 @@ func viewRulesScreen(rules []Rule) Screen {
 func (v *viewRules) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 	nextScreen = v
 
+	th.TextSize = unit.Dp(24)
 	layout.UniformInset(unit.Dp(8)).Layout(gtx, func(gtx Ctx) Dim {
 		return v.list.Layout(gtx, len(v.rules)+2, func(gtx Ctx, i int) Dim {
 			return layout.UniformInset(unit.Dp(16)).Layout(gtx, func(gtx Ctx) Dim {
