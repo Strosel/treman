@@ -158,7 +158,7 @@ func drules() []Rule {
 		},
 		SetRule{
 			Name: "Jag har aldrig sett...",
-			Desc: "Häfv resten av din enhet och skapa en ny regel\n eller \n Dela ut 6+6 klunkar.",
+			Desc: "Häfv resten av din enhet och skapa en ny regel eller dela ut 6+6 klunkar.",
 			Set:  Roll{6, 6},
 		},
 		SetRule{
