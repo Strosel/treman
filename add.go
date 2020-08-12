@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gioui.org/io/key"
 	"gioui.org/layout"
 	"gioui.org/unit"
 	"gioui.org/widget"
@@ -77,6 +78,11 @@ func (a *addRule) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 	text := func(gtx Ctx) Dim {
 		edit := material.Editor(th, a.nameEdit, "Regel")
 		edit.TextSize = material.H5(th, "").TextSize
+		txt := a.nameEdit.Text()
+		if len(txt) > 0 && txt[len(txt)-1] == '\n' {
+			a.nameEdit.Delete(-1)
+			key.HideInputOp{}.Add(gtx.Ops)
+		}
 		return edit.Layout(gtx)
 	}
 
