@@ -8,7 +8,7 @@ import (
 )
 
 func loadFont() ([]text.FontFace, error) {
-	f, err := pkger.Open("/dice.ttf")
+	f, err := pkger.Open("/assets/dice.ttf")
 	if err != nil {
 		return nil, err
 	}
