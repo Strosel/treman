@@ -106,6 +106,12 @@ func (g *game) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 						nextScreen = addRuleScreen(th, g.rules)
 					}
 					return newBttn.Layout(gtx)
+				} else if (SetRule{Set: Roll{2, 1}}.Valid(g.dice)) {
+					newBttn.Text = "\nUtmaning\n"
+					for g.newClick.Clicked() {
+						nextScreen = challengeScreen(g.rules, g.dice)
+					}
+					return newBttn.Layout(gtx)
 				}
 				return Dim{}
 			}),
