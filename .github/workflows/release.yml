@@ -1,0 +1,17 @@
+name: A workflow to build wasm for github pages
+on:
+    push: 
+        tags:
+            - v*
+
+jobs:
+    build:
+        name: Wasm build/deploy action
+        runs-on: ubuntu-latest
+        steps:
+            - 
+                uses: actions/checkout@v1
+            - 
+                uses: ./wasm-action
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
