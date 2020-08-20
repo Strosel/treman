@@ -1,31 +1,38 @@
 package main
 
 import (
+	"image/color"
+	"runtime"
+
 	"gioui.org/io/key"
 	"gioui.org/layout"
+	"gioui.org/text"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+	"golang.org/x/image/colornames"
 )
 
 type addRule struct {
 	rules []Rule
 
-	ruleRadio *widget.Enum
-	d1        *diceButton
-	d2        *diceButton
-	nameEdit  *widget.Editor
-	saveClick *widget.Clickable
+	ruleRadio   *widget.Enum
+	d1          *diceButton
+	d2          *diceButton
+	nameEdit    *widget.Editor
+	saveClick   *widget.Clickable
+	cancelClick *widget.Clickable
 }
 
 func addRuleScreen(th *material.Theme, rules []Rule) Screen {
 	a := &addRule{
-		rules:     rules,
-		ruleRadio: new(widget.Enum),
-		d1:        newDiceButton(th),
-		d2:        newDiceButton(th),
-		nameEdit:  new(widget.Editor),
-		saveClick: new(widget.Clickable),
+		rules:       rules,
+		ruleRadio:   new(widget.Enum),
+		d1:          newDiceButton(th),
+		d2:          newDiceButton(th),
+		nameEdit:    new(widget.Editor),
+		saveClick:   new(widget.Clickable),
+		cancelClick: new(widget.Clickable),
 	}
 
 	a.ruleRadio.Value = "sum"
@@ -37,17 +44,48 @@ func (a *addRule) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 	nextScreen = a
 
 	radio := func(gtx Ctx) Dim {
-		in := layout.UniformInset(unit.Dp(0))
-		in.Top = unit.Dp(64)
-		return in.Layout(gtx, func(gtx Ctx) Dim {
-			return layout.Flex{
-				Spacing: layout.SpaceAround,
-			}.Layout(gtx,
-				layout.Rigid(material.RadioButton(th, a.ruleRadio, "sum", "Summa").Layout),
-				layout.Rigid(material.RadioButton(th, a.ruleRadio, "set", "Par").Layout),
-				layout.Rigid(material.RadioButton(th, a.ruleRadio, "single", "En tärning").Layout),
-			)
-		})
+		if runtime.GOOS == "android" {
+			in := layout.UniformInset(unit.Dp(0))
+			in.Top = unit.Dp(64)
+			return in.Layout(gtx, func(gtx Ctx) Dim {
+				return layout.Flex{
+					Spacing: layout.SpaceAround,
+				}.Layout(gtx,
+					layout.Rigid(material.RadioButton(th, a.ruleRadio, "sum", "Summa").Layout),
+					layout.Rigid(material.RadioButton(th, a.ruleRadio, "set", "Par").Layout),
+					layout.Rigid(material.RadioButton(th, a.ruleRadio, "single", "En tärning").Layout),
+				)
+			})
+		}
+		return layout.Flex{
+			Axis: layout.Vertical,
+		}.Layout(gtx,
+			layout.Rigid(func(gtx Ctx) Dim {
+				return layout.Flex{}.Layout(gtx,
+					layout.Rigid(func(gtx Ctx) Dim {
+						bttn := material.Button(th, a.cancelClick, "←")
+						bttn.Color = colornames.Black
+						bttn.Background = color.RGBA{255, 255, 255, 255}
+						bttn.Font.Weight = text.Bold
+
+						for a.cancelClick.Clicked() {
+							nextScreen = gameScreen(a.rules)
+						}
+
+						return bttn.Layout(gtx)
+					}),
+				)
+			}),
+			layout.Rigid(func(gtx Ctx) Dim {
+				return layout.Flex{
+					Spacing: layout.SpaceAround,
+				}.Layout(gtx,
+					layout.Rigid(material.RadioButton(th, a.ruleRadio, "sum", "Summa").Layout),
+					layout.Rigid(material.RadioButton(th, a.ruleRadio, "set", "Par").Layout),
+					layout.Rigid(material.RadioButton(th, a.ruleRadio, "single", "En tärning").Layout),
+				)
+			}),
+		)
 	}
 
 	rolls := func(gtx Ctx) Dim {
