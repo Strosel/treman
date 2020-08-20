@@ -1,4 +1,4 @@
-name: A workflow to build wasm for github pages
+name: Update github pages wasm
 on:
     push: 
         tags:
