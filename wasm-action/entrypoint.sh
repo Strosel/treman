@@ -35,7 +35,7 @@ if [ "$?" -ne 0 ]; then
     exit 1
 fi
 
-if [ $RES -ge 200 ] && [ $RES -le 299 ]; then
+if [ $RES -lt 200 ] && [ $RES -ge 300 ]; then
     echo "HTTP error ${RES}"
     cat $tmp
     exit 1
