@@ -1,7 +1,6 @@
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
-gioui.org v0.0.0-20200726090130-3b95e2918359 h1:lae3H0ZryBOt3Kboxa55mpo5KsASVHSdS65EsGMf9kc=
-gioui.org v0.0.0-20200726090130-3b95e2918359/go.mod h1:jiUwifN9cRl/zmco43aAqh0aV+s9GbhG13KcD+gEpkU=
-gioui.org v0.0.0-20200810193320-c3574cdabdb1 h1:/Sk5kG5eP9mR4hwTXWXHplHQkXbi680gMbKx3CG8wKE=
+gioui.org v0.0.0-20200817101435-3bb1450d0d0e h1:V4PQqoftotkx9k4loaN2JTCPEFndUwmsUG2EYhGGXr8=
+gioui.org v0.0.0-20200817101435-3bb1450d0d0e/go.mod h1:Y+uS7hHMvku1Q+ooaoq6fYD5B2LGoT8JtFgvmYmRzTw=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
