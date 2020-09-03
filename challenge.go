@@ -13,17 +13,15 @@ import (
 )
 
 type challenge struct {
-	old   Roll
 	dice  Roll
 	rules []Rule
 
 	bttn *widget.Clickable
 }
 
-func challengeScreen(rules []Rule, old Roll) Screen {
+func challengeScreen(rules []Rule) Screen {
 	return &challenge{
 		rules: rules,
-		old:   old,
 		bttn:  new(widget.Clickable),
 	}
 }
@@ -84,28 +82,31 @@ func (c *challenge) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 	}
 
 	button := func(gtx Ctx) Dim {
-		bttn := material.Button(th, c.bttn, "\nKör\n")
-		if c.dice[0] != c.dice[1] && c.dice[0] < 7 {
-			bttn.Text = "\nOK\n"
-		}
-		bttn.Background = colornames.Mediumseagreen
+		return layout.UniformInset(unit.Dp(8)).Layout(gtx,
+			func(gtx Ctx) Dim {
+				bttn := material.Button(th, c.bttn, "\nKör\n")
+				if c.dice[0] != c.dice[1] && c.dice[0] < 7 {
+					bttn.Text = "\nOK\n"
+				}
+				bttn.Background = colornames.Mediumseagreen
 
-		for c.bttn.Clicked() && c.dice[0] < 7 {
-			if bttn.Text == "\nKör\n" {
-				go func() {
-					c.dice.AnimateRoll()
-					for c.dice[0] == c.dice[1] {
-						//Challange should never yield identical dice
-						c.dice.Roll()
+				for c.bttn.Clicked() && c.dice[0] < 7 {
+					if bttn.Text == "\nKör\n" {
+						go func() {
+							c.dice.AnimateRoll()
+							for c.dice[0] == c.dice[1] {
+								//Challange should never yield identical dice
+								c.dice.Roll()
+							}
+							win.Invalidate()
+						}()
+					} else {
+						nextScreen = gameScreen(c.rules)
 					}
-					win.Invalidate()
-				}()
-			} else {
-				nextScreen = gameScreen(c.rules)
-			}
-		}
+				}
 
-		return bttn.Layout(gtx)
+				return bttn.Layout(gtx)
+			})
 	}
 
 	layout.UniformInset(unit.Dp(8)).Layout(gtx, func(gtx Ctx) Dim {
@@ -121,8 +122,5 @@ func (c *challenge) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 		)
 	})
 
-	if ns, ok := nextScreen.(*game); ok {
-		ns.dice = c.old
-	}
 	return nextScreen
 }

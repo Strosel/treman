@@ -106,19 +106,23 @@ func (g *game) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 						nextScreen = addRuleScreen(th, g.rules)
 					}
 					return newBttn.Layout(gtx)
-				} else if (SetRule{Set: Roll{2, 1}}.Valid(g.dice)) {
-					newBttn.Text = "\nUtmaning\n"
-					for g.newClick.Clicked() {
-						nextScreen = challengeScreen(g.rules, g.dice)
-					}
-					return newBttn.Layout(gtx)
 				}
 				return Dim{}
 			}),
 			RigidInset(in, func(gtx Ctx) Dim {
 				rollBttn := material.Button(th, g.rollClick, "\nRulla\n")
-				for g.rollClick.Clicked() && g.dice[0] < 7 {
-					go g.dice.AnimateRoll()
+
+				if (SetRule{Set: Roll{2, 1}}.Valid(g.dice)) {
+					rollBttn.Text = "\nUtmaning\n"
+					rollBttn.Background = colornames.Mediumseagreen
+
+					for g.rollClick.Clicked() {
+						nextScreen = challengeScreen(g.rules)
+					}
+				} else {
+					for g.rollClick.Clicked() && g.dice[0] < 7 {
+						go g.dice.AnimateRoll()
+					}
 				}
 				return rollBttn.Layout(gtx)
 			}),
