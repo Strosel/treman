@@ -122,5 +122,9 @@ func (c *challenge) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 		)
 	})
 
+	if nextScreen, ok := nextScreen.(*game); ok {
+		go nextScreen.dice.AnimateRoll()
+	}
+
 	return nextScreen
 }

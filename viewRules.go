@@ -49,7 +49,7 @@ func (v *viewRules) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 				if i == 0 && runtime.GOOS == "android" {
 					return layout.Inset{Top: unit.Dp(16)}.Layout(gtx, material.H6(th, "Regler").Layout)
 				} else if i == 0 {
-					bttn := material.Button(th, v.cancelClick, "← Regler"+runtime.GOOS)
+					bttn := material.Button(th, v.cancelClick, "← Regler")
 					bttn.Color = colornames.Black
 					bttn.Background = color.RGBA{255, 255, 255, 255}
 					bttn.TextSize = material.H6(th, "").TextSize
