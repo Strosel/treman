@@ -6,6 +6,7 @@ import (
 	"math"
 
 	"gioui.org/layout"
+	"gioui.org/text"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 	"golang.org/x/image/colornames"
@@ -27,6 +28,22 @@ func FlexedInset(in layout.Inset, weight float32, widget layout.Widget) layout.F
 	return layout.Flexed(weight, func(gtx Ctx) Dim {
 		return in.Layout(gtx, widget)
 	})
+}
+
+func DiceLayout(th *material.Theme, d int, c ...color.RGBA) func(Ctx) Dim {
+	if len(c) == 0 {
+		c = []color.RGBA{colornames.Black}
+	}
+
+	dice := material.H2(th, fmt.Sprint(d))
+	dice.Alignment = text.Middle
+	dice.Font.Variant = "Dice"
+	dice.Color = c[0]
+	if d > 6 {
+		dice.Color = c[len(c)-1]
+		dice.Text = fmt.Sprint((d % 6) + 1)
+	}
+	return dice.Layout
 }
 
 type diceButton struct {
