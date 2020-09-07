@@ -55,14 +55,18 @@ func (g *game) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 				)
 			}),
 			RigidInset(layout.UniformInset(unit.Dp(16)), func(gtx Ctx) Dim {
-				dice := material.H2(th, fmt.Sprintf("%v %v", g.dice[0], g.dice[1]))
-				dice.Alignment = text.Middle
-				dice.Font.Variant = "Dice"
-				if g.dice[0] > 6 {
-					dice.Color = colornames.Rosybrown
-					dice.Text = fmt.Sprintf("%v %v", (g.dice[0]%6)+1, (g.dice[1]%6)+1)
-				}
-				return dice.Layout(gtx)
+				return layout.Flex{
+					Spacing: layout.SpaceAround,
+					Axis: func() layout.Axis {
+						if gtx.Constraints.Max.X < 600 {
+							return layout.Vertical
+						}
+						return layout.Horizontal
+					}(),
+				}.Layout(gtx,
+					RigidInset(layout.UniformInset(unit.Dp(8)), DiceLayout(th, g.dice[0], colornames.Black, colornames.Rosybrown)),
+					RigidInset(layout.UniformInset(unit.Dp(8)), DiceLayout(th, g.dice[1], colornames.Black, colornames.Rosybrown)),
+				)
 			}),
 		)
 	}

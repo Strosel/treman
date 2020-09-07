@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"image/color"
 
 	"gioui.org/layout"
@@ -45,26 +44,8 @@ func (c *challenge) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 		return layout.Flex{
 			Spacing: layout.SpaceEvenly,
 		}.Layout(gtx,
-			layout.Rigid(func(gtx Ctx) Dim {
-				die := material.H2(th, fmt.Sprint(c.dice[0]))
-				die.Font.Variant = "Dice"
-				die.Color = color.RGBA{230, 0, 0, 255}
-				if c.dice[0] > 6 {
-					die.Text = fmt.Sprint((c.dice[0] % 6) + 1)
-				}
-
-				return die.Layout(gtx)
-			}),
-			layout.Rigid(func(gtx Ctx) Dim {
-				die := material.H2(th, fmt.Sprint(c.dice[1]))
-				die.Font.Variant = "Dice"
-				die.Color = colornames.Royalblue
-				if c.dice[0] > 6 {
-					die.Text = fmt.Sprint((c.dice[1] % 6) + 1)
-				}
-
-				return die.Layout(gtx)
-			}),
+			layout.Rigid(DiceLayout(th, c.dice[0], color.RGBA{230, 0, 0, 255})),
+			layout.Rigid(DiceLayout(th, c.dice[1], colornames.Royalblue)),
 		)
 	}
 
