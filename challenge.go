@@ -1,14 +1,11 @@
 package main
 
 import (
-	"image/color"
-
 	"gioui.org/layout"
 	"gioui.org/text"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
-	"golang.org/x/image/colornames"
 )
 
 type challenge struct {
@@ -44,8 +41,8 @@ func (c *challenge) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 		return layout.Flex{
 			Spacing: layout.SpaceEvenly,
 		}.Layout(gtx,
-			layout.Rigid(DiceLayout(th, c.dice[0], color.RGBA{230, 0, 0, 255})),
-			layout.Rigid(DiceLayout(th, c.dice[1], colornames.Royalblue)),
+			layout.Rigid(DiceLayout(th, c.dice[0], MYRED)),
+			layout.Rigid(DiceLayout(th, c.dice[1], ROYALBLUE)),
 		)
 	}
 
@@ -69,7 +66,7 @@ func (c *challenge) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 				if c.dice[0] != c.dice[1] && c.dice[0] < 7 {
 					bttn.Text = "\nOK\n"
 				}
-				bttn.Background = colornames.Mediumseagreen
+				bttn.Background = MEDIUMSEAGREEN
 
 				for c.bttn.Clicked() && c.dice[0] < 7 {
 					if bttn.Text == "\nKör\n" {

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"image/color"
 	"runtime"
 
 	"gioui.org/io/key"
@@ -10,7 +9,6 @@ import (
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
-	"golang.org/x/image/colornames"
 )
 
 type addRule struct {
@@ -64,8 +62,8 @@ func (a *addRule) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 				return layout.Flex{}.Layout(gtx,
 					layout.Rigid(func(gtx Ctx) Dim {
 						bttn := material.Button(th, a.cancelClick, "←")
-						bttn.Color = colornames.Black
-						bttn.Background = color.RGBA{255, 255, 255, 255}
+						bttn.Color = BLACK
+						bttn.Background = WHITE
 						bttn.Font.Weight = text.Bold
 
 						for a.cancelClick.Clicked() {
@@ -119,7 +117,7 @@ func (a *addRule) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 		txt := a.nameEdit.Text()
 		if len(txt) > 0 && txt[len(txt)-1] == '\n' {
 			a.nameEdit.Delete(-1)
-			key.HideInputOp{}.Add(gtx.Ops)
+			key.SoftKeyboardOp{Show: false}.Add(gtx.Ops)
 		}
 		return edit.Layout(gtx)
 	}

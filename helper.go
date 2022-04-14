@@ -9,7 +9,6 @@ import (
 	"gioui.org/text"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
-	"golang.org/x/image/colornames"
 )
 
 //Ctx is a helper alias for less wide code
@@ -30,9 +29,9 @@ func FlexedInset(in layout.Inset, weight float32, widget layout.Widget) layout.F
 	})
 }
 
-func DiceLayout(th *material.Theme, d int, c ...color.RGBA) func(Ctx) Dim {
+func DiceLayout(th *material.Theme, d int, c ...color.NRGBA) func(Ctx) Dim {
 	if len(c) == 0 {
-		c = []color.RGBA{colornames.Black}
+		c = []color.NRGBA{BLACK}
 	}
 
 	dice := material.H2(th, fmt.Sprint(d))
@@ -63,8 +62,8 @@ func newDiceButton(th *material.Theme) *diceButton {
 func (d *diceButton) Layout(gtx Ctx, min, max int) Dim {
 	bttn := material.Button(d.th, d.click, fmt.Sprint(d.val))
 	bttn.TextSize = material.H4(d.th, "").TextSize
-	bttn.Color = colornames.Black
-	bttn.Background = color.RGBA{255, 255, 255, 255}
+	bttn.Color = BLACK
+	bttn.Background = WHITE
 	if max < 7 {
 		bttn.Font.Variant = "Dice"
 	}

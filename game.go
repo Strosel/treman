@@ -2,14 +2,12 @@ package main
 
 import (
 	"fmt"
-	"image/color"
 
 	"gioui.org/layout"
 	"gioui.org/text"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
-	"golang.org/x/image/colornames"
 )
 
 type game struct {
@@ -43,8 +41,8 @@ func (g *game) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 				}.Layout(gtx,
 					layout.Rigid(func(gtx Ctx) Dim {
 						bttn := material.Button(th, g.ruleClick, "?")
-						bttn.Color = colornames.Black
-						bttn.Background = color.RGBA{255, 255, 255, 255}
+						bttn.Color = BLACK
+						bttn.Background = WHITE
 
 						for g.ruleClick.Clicked() {
 							nextScreen = viewRulesScreen(g.rules)
@@ -64,8 +62,8 @@ func (g *game) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 						return layout.Horizontal
 					}(),
 				}.Layout(gtx,
-					RigidInset(layout.UniformInset(unit.Dp(8)), DiceLayout(th, g.dice[0], colornames.Black, colornames.Rosybrown)),
-					RigidInset(layout.UniformInset(unit.Dp(8)), DiceLayout(th, g.dice[1], colornames.Black, colornames.Rosybrown)),
+					RigidInset(layout.UniformInset(unit.Dp(8)), DiceLayout(th, g.dice[0], BLACK, ROSYBROWN)),
+					RigidInset(layout.UniformInset(unit.Dp(8)), DiceLayout(th, g.dice[1], BLACK, ROSYBROWN)),
 				)
 			}),
 		)
@@ -103,7 +101,7 @@ func (g *game) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 		}.Layout(gtx,
 			RigidInset(in, func(gtx Ctx) Dim {
 				newBttn := material.Button(th, g.newClick, "\nNy Regel\n")
-				newBttn.Background = colornames.Mediumseagreen
+				newBttn.Background = MEDIUMSEAGREEN
 
 				if (SetRule{Set: Roll{6, 6}}.Valid(g.dice)) {
 					for g.newClick.Clicked() {
@@ -118,7 +116,7 @@ func (g *game) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 
 				if (SetRule{Set: Roll{2, 1}}.Valid(g.dice)) {
 					rollBttn.Text = "\nUtmaning\n"
-					rollBttn.Background = colornames.Mediumseagreen
+					rollBttn.Background = MEDIUMSEAGREEN
 
 					for g.rollClick.Clicked() {
 						nextScreen = challengeScreen(g.rules)
