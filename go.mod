@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	gioui.org v0.0.0-20220413105833-6e6620388121
-	github.com/markbates/pkger v0.14.0
+	github.com/markbates/pkger v0.17.1
 	golang.org/x/image v0.0.0-20210628002857-a66eb6448b8d
 )
 
