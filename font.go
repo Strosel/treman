@@ -1,25 +1,17 @@
 package main
 
 import (
+	_ "embed"
+
 	"gioui.org/font/gofont"
 	"gioui.org/font/opentype"
 	"gioui.org/text"
-	"github.com/markbates/pkger"
 )
 
+//go:embed assets/dice.ttf
+var diceFont []byte
+
 func loadFont() ([]text.FontFace, error) {
-	f, err := pkger.Open("/assets/dice.ttf")
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	diceFont := make([]byte, 6000)
-	_, err = f.Read(diceFont)
-	if err != nil {
-		return nil, err
-	}
-
 	face, err := opentype.Parse(diceFont)
 	if err != nil {
 		return nil, err
