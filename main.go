@@ -53,11 +53,10 @@ func loop(w *app.Window, th *material.Theme) error {
 		switch e := e.(type) {
 		case system.DestroyEvent:
 			return e.Err
-		case key.Event: //NOTE oklart om detta funkar
+		case key.Event:
 			if e.Name == key.NameBack {
 				screen = gameScreen(screen.Rules())
 			}
-			//HACK e.Cancel = true
 			w.Invalidate()
 		case system.FrameEvent:
 			gtx := layout.NewContext(&ops, e)

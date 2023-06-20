@@ -41,6 +41,8 @@
             vendorHash = "sha256-2LQCFYyEletx+FswLV1Ui506qG62yHUKGr5vP5Y/b/s=";
             doCheck = false;
           };
+
+          minsdk = "29";
         in
         {
           devShells.default = pkgs.mkShell
@@ -55,14 +57,14 @@
                   local V=$(gum input --prompt 'Version? ' --placeholder '7')
 
                   gum spin --spinner dot --title "Building..." -- \
-                  gogio -target android -icon assets/meta/icon.png -version $V -minsdk 29 .
+                  gogio -target android -icon assets/meta/icon.png -version $V -minsdk ${minsdk} .
 
                   apksigner sign --ks ~/.android/sign.keystore treman.apk
                 }
 
                 stream () {
                   gum spin --spinner dot --title "Building..." -- \
-                  gogio -target android -icon assets/meta/icon.png -minsdk 29 .
+                  gogio -target android -icon assets/meta/icon.png -minsdk ${minsdk} .
                   adb uninstall com.github.treman > /dev/null 2>&1
                   adb install treman.apk
                 }

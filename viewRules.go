@@ -1,8 +1,6 @@
 package main
 
 import (
-	"runtime"
-
 	"gioui.org/layout"
 	"gioui.org/unit"
 	"gioui.org/widget"
@@ -51,9 +49,7 @@ func (v *viewRules) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 	layout.UniformInset(unit.Dp(8)).Layout(gtx, func(gtx Ctx) Dim {
 		return v.list.Layout(gtx, 4, func(gtx Ctx, i int) Dim {
 			return layout.UniformInset(unit.Dp(16)).Layout(gtx, func(gtx Ctx) Dim {
-				if i == 0 && runtime.GOOS == "android" {
-					return layout.Inset{Top: unit.Dp(16)}.Layout(gtx, material.H6(th, "Regler").Layout)
-				} else if i == 0 {
+				if i == 0 {
 					bttn := material.Button(th, v.cancelClick, "← Regler")
 					bttn.Color = BLACK
 					bttn.Background = WHITE
