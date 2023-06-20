@@ -7,6 +7,7 @@ import (
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+	"github.com/inkeliz/giohyperlink"
 )
 
 var baserules = `Först väljs en spelare till treman, detta är en titel som kommer förflytta sig under spelets gång. 
@@ -25,7 +26,9 @@ type viewRules struct {
 	rules []Rule
 
 	list        *layout.List
+	rulesList   *layout.List
 	cancelClick *widget.Clickable
+	privClick   *widget.Clickable
 }
 
 func viewRulesScreen(rules []Rule) Screen {
@@ -34,7 +37,11 @@ func viewRulesScreen(rules []Rule) Screen {
 		list: &layout.List{
 			Axis: layout.Vertical,
 		},
+		rulesList: &layout.List{
+			Axis: layout.Vertical,
+		},
 		cancelClick: new(widget.Clickable),
+		privClick:   new(widget.Clickable),
 	}
 }
 
@@ -42,7 +49,7 @@ func (v *viewRules) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 	nextScreen = v
 
 	layout.UniformInset(unit.Dp(8)).Layout(gtx, func(gtx Ctx) Dim {
-		return v.list.Layout(gtx, len(v.rules)+2, func(gtx Ctx, i int) Dim {
+		return v.list.Layout(gtx, 4, func(gtx Ctx, i int) Dim {
 			return layout.UniformInset(unit.Dp(16)).Layout(gtx, func(gtx Ctx) Dim {
 				if i == 0 && runtime.GOOS == "android" {
 					return layout.Inset{Top: unit.Dp(16)}.Layout(gtx, material.H6(th, "Regler").Layout)
@@ -66,8 +73,27 @@ func (v *viewRules) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 					body := material.Body1(th, baserules)
 					body.TextSize = unit.Sp(24)
 					return body.Layout(gtx)
+				} else if i == 2 {
+
+					return v.rulesList.Layout(gtx, len(v.rules), func(gtx Ctx, i int) Dim {
+						return layout.Inset{Top: unit.Dp(32)}.Layout(gtx, v.rules[i].Widget(th))
+					})
+				} else {
+					bttn := material.Button(th, v.privClick, "Integritetspolicy")
+					bttn.Color = GRAY
+					bttn.Background = WHITE
+					bttn.TextSize = unit.Sp(24)
+
+					for v.privClick.Clicked() {
+						giohyperlink.Open("https://strosel.github.io/treman/")
+					}
+
+					return layout.Flex{
+						Alignment: layout.End,
+					}.Layout(gtx,
+						RigidInset(layout.Inset{Top: unit.Dp(16)}, bttn.Layout),
+					)
 				}
-				return v.rules[i-2].Widget(th)(gtx)
 			})
 		})
 	})

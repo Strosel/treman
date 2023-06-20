@@ -6,7 +6,9 @@ require golang.org/x/image v0.5.0
 
 require (
 	gioui.org/cmd v0.0.0-20230502182008-0a86898b4184 // indirect
+	git.wow.st/gmp/jni v0.0.0-20200827154156-014cd5c7c4c0 // indirect
 	github.com/akavel/rsrc v0.10.1 // indirect
+	github.com/inkeliz/giohyperlink v0.0.0-20220903215451-2ac5d54abdce // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
 	golang.org/x/tools v0.1.12 // indirect

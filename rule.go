@@ -30,7 +30,7 @@ func (sr SumRule) Valid(r Roll) bool {
 
 func (sr SumRule) Widget(th *material.Theme) func(gtx Ctx) Dim {
 	return func(gtx Ctx) Dim {
-		dice := material.Body1(th, fmt.Sprint(0))
+		dice := material.Body2(th, fmt.Sprint(0))
 		dice.Font.Variant = "Dice"
 
 		return layout.Flex{
@@ -39,12 +39,12 @@ func (sr SumRule) Widget(th *material.Theme) func(gtx Ctx) Dim {
 			layout.Rigid(func(gtx Ctx) Dim {
 				return layout.Flex{}.Layout(gtx,
 					layout.Rigid(dice.Layout),
-					layout.Rigid(material.Body1(th, " + ").Layout),
+					layout.Rigid(material.Body2(th, " + ").Layout),
 					layout.Rigid(dice.Layout),
-					layout.Rigid(material.Body1(th, fmt.Sprintf(" = %v %v", sr.Sum, sr.Name)).Layout),
+					layout.Rigid(material.Body2(th, fmt.Sprintf(" = %v %v", sr.Sum, sr.Name)).Layout),
 				)
 			}),
-			layout.Rigid(material.Body1(th, sr.Desc).Layout),
+			layout.Rigid(material.Body2(th, sr.Desc).Layout),
 		)
 	}
 }
@@ -67,7 +67,7 @@ func (sr SetRule) Valid(r Roll) bool {
 
 func (sr SetRule) Widget(th *material.Theme) func(gtx Ctx) Dim {
 	return func(gtx Ctx) Dim {
-		dice := material.Body1(th, fmt.Sprint(sr.Set[0], sr.Set[1]))
+		dice := material.Body2(th, fmt.Sprint(sr.Set[0], sr.Set[1]))
 		dice.Font.Variant = "Dice"
 
 		return layout.Flex{
@@ -76,10 +76,10 @@ func (sr SetRule) Widget(th *material.Theme) func(gtx Ctx) Dim {
 			layout.Rigid(func(gtx Ctx) Dim {
 				return layout.Flex{}.Layout(gtx,
 					layout.Rigid(dice.Layout),
-					layout.Rigid(material.Body1(th, fmt.Sprintf(" %v", sr.Name)).Layout),
+					layout.Rigid(material.Body2(th, fmt.Sprintf(" %v", sr.Name)).Layout),
 				)
 			}),
-			layout.Rigid(material.Body1(th, sr.Desc).Layout),
+			layout.Rigid(material.Body2(th, sr.Desc).Layout),
 		)
 	}
 }
@@ -100,7 +100,7 @@ func (sr SingleRule) Valid(r Roll) bool {
 
 func (sr SingleRule) Widget(th *material.Theme) func(gtx Ctx) Dim {
 	return func(gtx Ctx) Dim {
-		dice := material.Body1(th, fmt.Sprint(sr.Dice))
+		dice := material.Body2(th, fmt.Sprint(sr.Dice))
 		dice.Font.Variant = "Dice"
 
 		return layout.Flex{
@@ -109,10 +109,10 @@ func (sr SingleRule) Widget(th *material.Theme) func(gtx Ctx) Dim {
 			layout.Rigid(func(gtx Ctx) Dim {
 				return layout.Flex{}.Layout(gtx,
 					layout.Rigid(dice.Layout),
-					layout.Rigid(material.Body1(th, fmt.Sprintf(" %v", sr.Name)).Layout),
+					layout.Rigid(material.Body2(th, fmt.Sprintf(" %v", sr.Name)).Layout),
 				)
 			}),
-			layout.Rigid(material.Body1(th, sr.Desc).Layout),
+			layout.Rigid(material.Body2(th, sr.Desc).Layout),
 		)
 	}
 }
@@ -147,7 +147,7 @@ func drules() []Rule {
 			},
 			Wid: func(sr specialRule, th *material.Theme) func(gtx Ctx) Dim {
 				return func(gtx Ctx) Dim {
-					dice := material.Body1(th, "3")
+					dice := material.Body2(th, "3")
 					dice.Font.Variant = "Dice"
 
 					return layout.Flex{
@@ -156,10 +156,10 @@ func drules() []Rule {
 						layout.Rigid(func(gtx Ctx) Dim {
 							return layout.Flex{}.Layout(gtx,
 								layout.Rigid(dice.Layout),
-								layout.Rigid(material.Body1(th, fmt.Sprintf(" %v", sr.Name)).Layout),
+								layout.Rigid(material.Body2(th, fmt.Sprintf(" %v", sr.Name)).Layout),
 							)
 						}),
-						layout.Rigid(material.Body1(th, sr.Desc).Layout),
+						layout.Rigid(material.Body2(th, sr.Desc).Layout),
 					)
 				}
 			},

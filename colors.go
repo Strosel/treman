@@ -7,6 +7,7 @@ import (
 )
 
 var (
+	GRAY           = color.NRGBAModel.Convert(colornames.Gray).(color.NRGBA)
 	BLACK          = color.NRGBAModel.Convert(colornames.Black).(color.NRGBA)
 	WHITE          = color.NRGBAModel.Convert(colornames.White).(color.NRGBA)
 	MEDIUMSEAGREEN = color.NRGBAModel.Convert(colornames.Mediumseagreen).(color.NRGBA)

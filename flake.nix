@@ -61,7 +61,10 @@
                 }
 
                 stream () {
+                  gum spin --spinner dot --title "Building..." -- \
                   gogio -target android -icon assets/meta/icon.png -minsdk 29 .
+                  adb uninstall com.github.treman > /dev/null 2>&1
+                  adb install treman.apk
                 }
               '';
             };

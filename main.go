@@ -12,6 +12,7 @@ import (
 	"gioui.org/op"
 	"gioui.org/unit"
 	"gioui.org/widget/material"
+	"github.com/inkeliz/giohyperlink"
 )
 
 var (
@@ -48,6 +49,7 @@ func loop(w *app.Window, th *material.Theme) error {
 	screen := gameScreen(drules())
 	for {
 		e := <-w.Events()
+		giohyperlink.ListenEvents(e)
 		switch e := e.(type) {
 		case system.DestroyEvent:
 			return e.Err
