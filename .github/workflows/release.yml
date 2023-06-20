@@ -1,17 +1,66 @@
 name: Update github pages wasm
 on:
-    push: 
-        tags:
-            - v*
+  push: 
+    tags:
+      - v*
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+# Default to bash
+defaults:
+  run:
+    shell: bash
 
 jobs:
-    build:
-        name: Wasm build/deploy action
-        runs-on: ubuntu-latest
-        steps:
-            - 
-                uses: actions/checkout@v1
-            - 
-                uses: ./wasm-action
-                env:
-                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  build:
+    name: Wasm build/deploy action
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install go and gio
+        run: |
+          sudo snap install go --classic && \
+          go get gioui.org/cmd/gogio && \
+          go install gioui.org/cmd/gogio
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v3
+      - name: Build with gogio
+        run: |
+          $HOME/go/bin/gogio -target js \
+            -o ./pages .
+      - name: Fix permissions
+        run: |-
+          chmod --recursive 755 ./pages
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ./pages
+
+  deploy:
+    needs: build
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
