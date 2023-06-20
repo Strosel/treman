@@ -8,9 +8,7 @@ Treman samlar ingen personlig information om dess användare.
 
 ## Kakor
 
-```
-En kaka är en fil som innehåller en identifierare (en sträng med bokstäver och siffror) som skickas av en webbserver till en webbläsare och lagras av webbläsaren. Identifieraren skickas därefter tillbaka till servern varje gång webbläsaren begär en sida från servern. Kakor kan antingen vara “ständiga kakor” eller “sessionskakor”: en ständig kaka lagras av en webbläsare och förblir giltig till det angivna utgångsdatumet, såvida den inte raderas av användaren innan utgångsdatumet; en sessionskaka, å andra sidan, kommer att gå ut i slutet av användarsessionen, när webbläsaren är stängd. Kakor innehåller vanligtvis inte information som personligen identifierar en användare, men personlig information som lagras om dig kan vara länkad till informationen som är lagrad i och erhållen från kakor.
-```
+*En kaka är en fil som innehåller en identifierare (en sträng med bokstäver och siffror) som skickas av en webbserver till en webbläsare och lagras av webbläsaren. Identifieraren skickas därefter tillbaka till servern varje gång webbläsaren begär en sida från servern. Kakor kan antingen vara “ständiga kakor” eller “sessionskakor”: en ständig kaka lagras av en webbläsare och förblir giltig till det angivna utgångsdatumet, såvida den inte raderas av användaren innan utgångsdatumet; en sessionskaka, å andra sidan, kommer att gå ut i slutet av användarsessionen, när webbläsaren är stängd. Kakor innehåller vanligtvis inte information som personligen identifierar en användare, men personlig information som lagras om dig kan vara länkad till informationen som är lagrad i och erhållen från kakor.*
 
 Treman använder inte kakor.
 

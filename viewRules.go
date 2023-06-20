@@ -85,7 +85,7 @@ func (v *viewRules) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 					bttn.TextSize = unit.Sp(24)
 
 					for v.privClick.Clicked() {
-						giohyperlink.Open("https://strosel.github.io/treman/")
+						giohyperlink.Open("https://strosel.github.io/treman/integritetspolicy")
 					}
 
 					return layout.Flex{
