@@ -3,9 +3,9 @@ package main
 import (
 	"runtime"
 
+	"gioui.org/font"
 	"gioui.org/io/key"
 	"gioui.org/layout"
-	"gioui.org/text"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -64,7 +64,7 @@ func (a *addRule) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 						bttn := material.Button(th, a.cancelClick, "←")
 						bttn.Color = BLACK
 						bttn.Background = WHITE
-						bttn.Font.Weight = text.Bold
+						bttn.Font.Weight = font.Bold
 
 						for a.cancelClick.Clicked() {
 							nextScreen = gameScreen(a.rules)

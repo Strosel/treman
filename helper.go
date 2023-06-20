@@ -11,10 +11,10 @@ import (
 	"gioui.org/widget/material"
 )
 
-//Ctx is a helper alias for less wide code
+// Ctx is a helper alias for less wide code
 type Ctx = layout.Context
 
-//Dim is a helper alias for less wide code
+// Dim is a helper alias for less wide code
 type Dim = layout.Dimensions
 
 func RigidInset(in layout.Inset, widget layout.Widget) layout.FlexChild {
@@ -36,7 +36,7 @@ func DiceLayout(th *material.Theme, d int, c ...color.NRGBA) func(Ctx) Dim {
 
 	dice := material.H2(th, fmt.Sprint(d))
 	dice.Alignment = text.Middle
-	dice.Font.Variant = "Dice"
+	dice.Font = diceFont
 	dice.Color = c[0]
 	if d > 6 {
 		dice.Color = c[len(c)-1]

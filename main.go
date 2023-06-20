@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"gioui.org/app"
+	"gioui.org/io/key"
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
@@ -14,7 +15,7 @@ import (
 )
 
 var (
-	fontSize = unit.Dp(32)
+	fontSize = unit.Sp(32)
 
 	win *app.Window
 	err error
@@ -50,11 +51,11 @@ func loop(w *app.Window, th *material.Theme) error {
 		switch e := e.(type) {
 		case system.DestroyEvent:
 			return e.Err
-		case *system.CommandEvent:
-			if e.Type == system.CommandBack {
+		case key.Event: //NOTE oklart om detta funkar
+			if e.Name == key.NameBack {
 				screen = gameScreen(screen.Rules())
 			}
-			e.Cancel = true
+			//HACK e.Cancel = true
 			w.Invalidate()
 		case system.FrameEvent:
 			gtx := layout.NewContext(&ops, e)

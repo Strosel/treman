@@ -64,7 +64,7 @@ func (v *viewRules) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 					)
 				} else if i == 1 {
 					body := material.Body1(th, baserules)
-					body.TextSize = unit.Dp(24)
+					body.TextSize = unit.Sp(24)
 					return body.Layout(gtx)
 				}
 				return v.rules[i-2].Widget(th)(gtx)

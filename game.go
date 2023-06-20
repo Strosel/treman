@@ -117,6 +117,7 @@ func (g *game) Layout(gtx Ctx, th *material.Theme) (nextScreen Screen) {
 				if (SetRule{Set: Roll{2, 1}}.Valid(g.dice)) {
 					rollBttn.Text = "\nUtmaning\n"
 					rollBttn.Background = MEDIUMSEAGREEN
+					rollBttn.Font.Style = 1
 
 					for g.rollClick.Clicked() {
 						nextScreen = challengeScreen(g.rules)
