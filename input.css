@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    h1 {
+        @apply mb-2 mt-0 text-xl font-medium leading-tight;
+    }
+
+    button {
+        @apply text-base text-white;
+    }
+
+    p, li {
+        @apply text-base;
+    }
+
+    .dice {
+        @apply font-dice;
+    }
+
+    @font-face {
+        font-family: 'dice';
+        src: url('./dice-mono.woff2') format('woff2'),   /* Super Modern Browsers */
+             url('./dice-mono.woff')  format('woff'),    /* Pretty Modern Browsers */
+             url('./dice-mono.ttf')   format('truetype') /* Safari, Android, iOS */  }
+}
