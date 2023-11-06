@@ -4,14 +4,30 @@
 
 @layer base {
     h1 {
-        @apply mb-2 mt-0 text-xl font-medium leading-tight;
+        @apply mb-2 mt-0 text-2xl font-medium;
+    }
+
+    h2 {
+        @apply mb-2 mt-0 text-lg font-medium;
+    }
+    
+    h3 {
+        @apply mb-2 mt-0 text-base font-medium;
+    }
+
+    label {
+        @apply text-sm text-black;
+    }
+
+    input[type=text] {
+        @apply text-base text-black;
     }
 
     button {
         @apply text-base text-white;
     }
 
-    p, li {
+    p {
         @apply text-base;
     }
 
@@ -23,5 +39,6 @@
         font-family: 'dice';
         src: url('./dice-mono.woff2') format('woff2'),   /* Super Modern Browsers */
              url('./dice-mono.woff')  format('woff'),    /* Pretty Modern Browsers */
-             url('./dice-mono.ttf')   format('truetype') /* Safari, Android, iOS */  }
+             url('./dice-mono.ttf')   format('truetype') /* Safari, Android, iOS */  
+    }
 }
