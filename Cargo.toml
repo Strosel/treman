@@ -18,3 +18,4 @@ console_error_panic_hook = "0.1.7"
 
 # Required explicitly to resolve conflict
 js-sys = "=0.3.64"
+tinyrand = "0.5.0"

@@ -14,7 +14,7 @@ module.exports = {
             base: '10vmin',
             lg: '14vmin',
             xl: '25vmin',
-            '2xl': '40vmin',
+            '2xl': '37vmin',
         },
         extend: {
             colors: {

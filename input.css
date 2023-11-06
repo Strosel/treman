@@ -27,7 +27,7 @@
         @apply text-base text-white;
     }
 
-    p {
+    p, ul {
         @apply text-base;
     }
 
