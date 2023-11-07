@@ -19,10 +19,10 @@
       "purpose": "any"
     }
   ],
-  "start_url": "/treman-rs/",
+  "start_url": "/treman/",
   "display": "standalone",
   "display_override": ["window-control-overlay", "standalone"],
-  "scope": "/treman-rs/",
+  "scope": "/treman/",
   "theme_color": "#000000",
   "background_color": "#ffffff",
   "short_name": "Treman",

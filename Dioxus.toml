@@ -1,7 +1,7 @@
 [application]
 
 # App (Project) Name
-name = "treman-rs"
+name = "treman"
 
 # Dioxus App Default Platform
 # desktop, web, mobile, ssr
@@ -13,7 +13,7 @@ out_dir = "dist"
 # resource (public) file folder
 asset_dir = "public"
 
-base_path = "treman-rs"
+base_path = "treman"
 
 [web.app]
 
