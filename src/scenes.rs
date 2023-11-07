@@ -1,5 +1,4 @@
 use dioxus::prelude::*;
-use dioxus_router::prelude::*;
 
 pub mod challange;
 pub mod create;
@@ -8,15 +7,12 @@ pub mod help;
 
 pub use self::{challange::Challange, create::Create, game::Game, help::Help};
 
-#[derive(Routable, Clone)]
+#[derive(Default, Clone, Copy)]
 pub enum Scene {
-    #[route("/")]
+    #[default]
     Game,
-    #[route("/utmaning")]
     Challange,
-    #[route("/ny-regel")]
     Create,
-    #[route("/help")]
     Help,
 }
 

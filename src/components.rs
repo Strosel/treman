@@ -1,4 +1,5 @@
 /// Icons from heroicons.com
+use crate::scenes::Scene;
 use dioxus::prelude::*;
 
 //BUG removing class from svg causes fill attribute to be skipped
@@ -33,6 +34,41 @@ pub fn LeftArrowIcon(cx: Scope) -> Element {
                 stroke_linejoin: "round",
                 d: "M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"
             }
+        }
+    }
+}
+
+#[derive(Props)]
+pub struct LinkProps<'a> {
+    to: Scene,
+    class: &'a str,
+    children: Element<'a>,
+}
+
+pub fn Link<'a>(cx: Scope<'a, LinkProps<'a>>) -> Element<'a> {
+    let LinkProps { to, class, .. } = cx.props;
+
+    render! {
+        a {
+            class: *class,
+            onclick: move |_| {
+                *use_shared_state::<Scene>(cx).unwrap().write() = *to;
+            },
+            &cx.props.children
+        }
+    }
+}
+
+pub fn NavButton<'a>(cx: Scope<'a, LinkProps<'a>>) -> Element<'a> {
+    let LinkProps { to, class, .. } = cx.props;
+
+    render! {
+        button{
+            class: *class,
+            onclick: move |_| {
+                *use_shared_state::<Scene>(cx).unwrap().write() = *to;
+            },
+            &cx.props.children
         }
     }
 }

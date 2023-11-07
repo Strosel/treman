@@ -1,11 +1,9 @@
 use super::Scene;
-use crate::icons::*;
+use crate::components::*;
 use crate::rules::*;
 use dioxus::prelude::*;
-use dioxus_router::prelude::*;
 
 pub fn Create(cx: Scope) -> Element {
-    let nav = use_navigator(cx);
     let trigger = use_state(cx, || RuleTrigger::Sum(2));
     let name = use_state(cx, String::new);
 
@@ -97,7 +95,9 @@ pub fn Create(cx: Scope) -> Element {
                             .unwrap()
                             .write()
                             .push(rule);
-                        nav.replace(Scene::Game);
+                        *use_shared_state::<Scene>(cx)
+                            .unwrap()
+                            .write() = Scene::Game;
                     }
                 },
                 "Spara"

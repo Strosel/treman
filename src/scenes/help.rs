@@ -1,8 +1,7 @@
 use super::Scene;
-use crate::icons::*;
+use crate::components::*;
 use crate::rules::*;
 use dioxus::prelude::*;
-use dioxus_router::prelude::*;
 
 #[inline_props]
 fn DisplayTrigger<'a>(cx: Scope, trigger: &'a RuleTrigger) -> Element {

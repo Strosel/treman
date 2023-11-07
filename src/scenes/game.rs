@@ -1,8 +1,7 @@
 use super::{AnimateDice, Scene};
-use crate::icons::*;
+use crate::components::*;
 use crate::rules::*;
 use dioxus::prelude::*;
-use dioxus_router::prelude::*;
 use tinyrand::{RandRange, StdRand};
 
 #[inline_props]
@@ -11,7 +10,6 @@ fn PlayGame<'a>(
     dice: &'a UseState<(u8, u8)>,
     animate: &'a UseState<bool>,
 ) -> Element<'a> {
-    let nav = use_navigator(cx);
     let rules: Vec<_> = use_shared_state::<Vec<Rule>>(cx)
         .unwrap()
         .read()
@@ -39,9 +37,9 @@ fn PlayGame<'a>(
 
         if **dice == (6,6) {
             render! {
-                button {
+                NavButton {
                     class: "bg-secondary rounded-md box-border w-full h-[15vh] min-h-[15vh]",
-                    onclick: move |_| { nav.replace(Scene::Create); },
+                    to: Scene::Create,
                     "Jag har aldrig sett..."
                 }
             }
@@ -49,9 +47,9 @@ fn PlayGame<'a>(
 
         if **dice == (1,2) || **dice == (2,1) {
             render! {
-                button {
+                NavButton {
                     class: "bg-secondary rounded-md box-border w-full h-[15vh] min-h-[15vh]",
-                    onclick: move |_| { nav.replace(Scene::Challange); },
+                    to: Scene::Challange,
                     "Utmaning"
                 }
             }

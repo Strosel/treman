@@ -1,7 +1,6 @@
 use super::{AnimateDice, Scene};
-use crate::icons::*;
+use crate::components::*;
 use dioxus::prelude::*;
-use dioxus_router::prelude::*;
 use std::cmp::Ordering;
 use tinyrand::{RandRange, StdRand};
 
@@ -11,8 +10,6 @@ fn PlayChallange<'a>(
     dice: &'a UseState<(u8, u8)>,
     animate: &'a UseState<bool>,
 ) -> Element<'a> {
-    let nav = use_navigator(cx);
-
     render! {
         h1 {
             class: "dice text-center",
@@ -50,9 +47,9 @@ fn PlayChallange<'a>(
             }
         } else {
             render!{
-                button {
+                NavButton {
                     class: "bg-secondary rounded-md box-border w-full h-[15vh]",
-                    onclick: move |_| { nav.replace(Scene::Game); },
+                    to: Scene::Game,
                     "Ok"
                 }
             }
