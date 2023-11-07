@@ -1,3 +1,5 @@
+#![allow(non_snake_case)]
+
 use crate::{rules::*, scenes::*};
 use dioxus::prelude::*;
 use dioxus_router::prelude::*;

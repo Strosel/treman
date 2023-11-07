@@ -86,6 +86,7 @@ pub fn Create(cx: Scope) -> Element {
             div{ class: "grow" }
             button {
                 class: "bg-secondary rounded-md box-border w-full h-[15vh]",
+                disabled: name.get().is_empty(),
                 onclick: move |_| {
                     if !name.get().is_empty() {
                         let rule = Rule::User {
@@ -96,8 +97,6 @@ pub fn Create(cx: Scope) -> Element {
                             .unwrap()
                             .write()
                             .push(rule);
-                        //FIXME clear might not be neccecarry
-                        name.with_mut(String::clear);
                         nav.replace(Scene::Game);
                     }
                 },

@@ -108,7 +108,7 @@ pub fn Help(cx: Scope) -> Element {
                 "Följande leder till att en ny spelare blir 'treman':"
             }
             ul {
-                class: "list-disc text-xs mx-4", //FIXME px-4 py-2 mx-4",
+                class: "list-disc text-xs mx-4",
                 li {"Om en ny person går med i spelet är hen nu treman."}
                 li {"Om en person lämnar bordet och kommer tillbaka (t.ex. går på toa eller hämtar mer dricka) är hen nu treman."}
                 li {"Skulle treman lämna bordet, blir föregående person treman igen."}

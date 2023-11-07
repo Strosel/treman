@@ -1,20 +1,82 @@
-use super::Scene;
+use super::{AnimateDice, Scene};
 use crate::icons::*;
 use crate::rules::*;
 use dioxus::prelude::*;
 use dioxus_router::prelude::*;
 use tinyrand::{RandRange, StdRand};
 
-pub fn Game(cx: Scope) -> Element {
+#[inline_props]
+fn PlayGame<'a>(
+    cx: Scope<'a>,
+    dice: &'a UseState<(u8, u8)>,
+    animate: &'a UseState<bool>,
+) -> Element<'a> {
     let nav = use_navigator(cx);
-    let d = use_state(cx, || (0, 0));
     let rules: Vec<_> = use_shared_state::<Vec<Rule>>(cx)
         .unwrap()
         .read()
         .iter()
-        .filter(|r| r.check(d))
+        .filter(|r| r.check(dice))
         .cloned()
         .collect();
+
+    render! {
+        h1 {
+            class: "dice text-center",
+            "{dice.0}{dice.1}"
+        }
+        ul {
+            class: "grow scrollbox",
+            if rules.is_empty() {
+                render! {
+                    li { "Ingenting" }
+                }
+            }
+            for r in rules.iter() {
+                li { r.name() }
+            }
+        }
+
+        if **dice == (6,6) {
+            render! {
+                button {
+                    class: "bg-secondary rounded-md box-border w-full h-[15vh] min-h-[15vh]",
+                    onclick: move |_| { nav.replace(Scene::Create); },
+                    "Jag har aldrig sett..."
+                }
+            }
+        }
+
+        if **dice == (1,2) || **dice == (2,1) {
+            render! {
+                button {
+                    class: "bg-secondary rounded-md box-border w-full h-[15vh] min-h-[15vh]",
+                    onclick: move |_| { nav.replace(Scene::Challange); },
+                    "Utmaning"
+                }
+            }
+        } else {
+            render! {
+                button {
+                    class: "bg-primary rounded-md box-border w-full h-[15vh] min-h-[15vh]",
+                    onclick: move |_| {
+                        let mut rng = use_shared_state::<StdRand>(cx).unwrap().write_silent();
+                        dice.set((
+                            rng.next_range(1..7_u16) as u8,
+                            rng.next_range(1..7_u16) as u8
+                        ));
+                        animate.set(true);
+                    },
+                    "Rulla"
+                }
+            }
+        }
+    }
+}
+
+pub fn Game(cx: Scope) -> Element {
+    let dice = use_state(cx, || (0, 0));
+    let animate = use_state(cx, || false);
 
     render! {
         div {
@@ -24,50 +86,20 @@ pub fn Game(cx: Scope) -> Element {
                 class: "w-6 h-6 self-end",
                 QuestionMarkIcon { }
             }
-            h1 { class: "dice text-center", "{d.0}{d.1}"}
-            ul {
-                class: "grow",
-                if rules.is_empty() {
-                    render! {
-                        li { "Ingenting" }
-                    }
-                }
-                for r in rules.iter() {
-                    render! {
-                        li { r.name() }
-                    }
-                }
-            }
-            if *d == (6,6) {
-                render! {
-                    button {
-                        class: "bg-secondary rounded-md box-border w-full h-[15vh]",
-                        onclick: move |_| { nav.replace(Scene::Create); },
-                        "Jag har aldrig sett..."
-                    }
-                }
-            }
 
-            if *d == (1,2) || *d == (2,1) {
-                render! {
-                    button {
-                        class: "bg-secondary rounded-md box-border w-full h-[15vh]",
-                        onclick: move |_| { nav.replace(Scene::Challange); },
-                        "Utmaning"
+            if **animate {
+                render!{
+                    AnimateDice {
+                        animate: animate,
+                        button_color: "bg-primary",
+                        button_text: "Rulla",
                     }
                 }
             } else {
-                render! {
-                    button {
-                        class: "bg-primary rounded-md box-border w-full h-[15vh]",
-                        onclick: move |_| {
-                            let mut rng = use_shared_state::<StdRand>(cx).unwrap().write_silent();
-                            d.set((
-                                rng.next_range(1..7_u16) as u8,
-                                rng.next_range(1..7_u16) as u8
-                            ));
-                        },
-                        "Rulla"
+                render!{
+                    PlayGame {
+                        dice: dice,
+                        animate: animate,
                     }
                 }
             }
