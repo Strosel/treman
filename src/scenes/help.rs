@@ -7,27 +7,30 @@ fn DisplayTrigger<'a>(cx: Scope, trigger: &'a RuleTrigger) -> Element {
         RuleTrigger::Sum(v) => render! {
             span {
                 span {
-                    class: "dice",
+                    class: "dice inline-block align-middle",
                     "0+0"
                 }
-                span { "={v}" }
+                span {
+                    class: "inline-block align-middle",
+                    "={v}"
+                }
             }
         },
         RuleTrigger::Pair(a, b) => render! {
             span {
-                class: "dice",
+                class: "dice inline-block align-middle",
                 "{a}&{b}"
             }
         },
         RuleTrigger::Single(v) => render! {
             span {
-                class: "dice",
+                class: "dice inline-block align-middle",
                 "{v}"
             }
         },
         RuleTrigger::Treman => render! {
             span {
-                class: "dice",
+                class: "dice inline-block align-middle",
                 "3"
             }
         },
@@ -45,18 +48,24 @@ fn DisplayRule(cx: Scope, rule: Rule) -> Element {
             div {
                 class: "p-4",
                 p {
-                    class: "text-xs",
+                    class: "text-sm",
                     DisplayTrigger { trigger: trigger }
-                    span { " {name}" }
+                    span {
+                        class: "inline-block align-middle px-4",
+                        "{name}"
+                    }
                 }
                 p {class: "text-xs", "{desc}"}
             }
         },
         Rule::User { trigger, name } => render! {
             p {
-                class: "text-xs",
+                class: "text-sm",
                 DisplayTrigger { trigger: trigger }
-                span { " {name}" }
+                span {
+                    class: "inline-block align-middle px-4",
+                    "{name}"
+                }
             }
         },
     }
