@@ -1,4 +1,7 @@
+use super::Scene;
+use crate::icons::*;
 use dioxus::prelude::*;
+use dioxus_router::prelude::*;
 use std::cmp::Ordering;
 use tinyrand::{RandRange, StdRand};
 
@@ -30,43 +33,47 @@ fn DisplayDice(cx: Scope, dice: ChallangeDice) -> Element {
 }
 
 pub fn Challange(cx: Scope) -> Element {
+    let nav = use_navigator(cx);
     let d = use_state(cx, ChallangeDice::default);
 
     render! {
         div {
-            class: "flex justify-center items-center text-center",
-            div {
-                class: "flex flex-col gap-4 p-4 w-[100vmin] h-screen",
-                h2 { class: "text-center", "Utmaning"}
+            class: "flex flex-col gap-4 p-4 w-[100vmin] h-screen",
+            Link{
+                to: Scene::Game,
+                class: "w-6 h-6",
+                LeftArrowIcon{ }
+            }
 
-                DisplayDice { dice: d.get().clone() }
-                match Ord::cmp(&d.red, &d.blue) {
-                    Ordering::Equal => render!{
-                        p { class: "grow", "Välj vars en tärning" }
-                    },
-                    Ordering::Less => render!{
-                        p { class: "grow", "Blå är ny Treman" }
-                    },
-                    Ordering::Greater => render!{
-                        p { class: "grow", "Röd är ny Treman" }
-                    },
-                }
+            h2 { class: "text-center", "Utmaning"}
 
-                if d.red == d.blue {
-                    render!{
-                        button {
-                            class: "bg-secondary rounded-md box-border w-full h-[15vh]",
-                            onclick: move |_| d.set(spin_dice(cx)),
-                            "Kör"
-                        }
+            DisplayDice { dice: d.get().clone() }
+            match Ord::cmp(&d.red, &d.blue) {
+                Ordering::Equal => render!{
+                    p { class: "grow", "Välj vars en tärning" }
+                },
+                Ordering::Less => render!{
+                    p { class: "grow", "Blå är ny Treman" }
+                },
+                Ordering::Greater => render!{
+                    p { class: "grow", "Röd är ny Treman" }
+                },
+            }
+
+            if d.red == d.blue {
+                render!{
+                    button {
+                        class: "bg-secondary rounded-md box-border w-full h-[15vh]",
+                        onclick: move |_| d.set(spin_dice(cx)),
+                        "Kör"
                     }
-                } else {
-                    render!{
-                        button {
-                            class: "bg-secondary rounded-md box-border w-full h-[15vh]",
-                            onclick: move |_| {}, //TODO reroute
-                            "Ok"
-                        }
+                }
+            } else {
+                render!{
+                    button {
+                        class: "bg-secondary rounded-md box-border w-full h-[15vh]",
+                        onclick: move |_| { nav.replace(Scene::Game); },
+                        "Ok"
                     }
                 }
             }

@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 @layer base {
+    /* outermost diouxus div, centers the scene */
+    #main {
+        @apply flex justify-center items-center text-center;
+    }
+
     h1 {
         @apply mb-2 mt-0 text-2xl font-medium;
     }

@@ -1,7 +1,9 @@
 use crate::{rules::*, scenes::*};
 use dioxus::prelude::*;
+use dioxus_router::prelude::*;
 use tinyrand::{Seeded, StdRand};
 
+mod icons;
 mod rules;
 mod scenes;
 
@@ -19,7 +21,8 @@ fn app(cx: Scope) -> Element {
         StdRand::seed((js_sys::Math::random() * u16::MAX as f64) as u64)
     });
     use_shared_state_provider(cx, || Rule::BASE.to_vec());
+
     render! {
-        Challange{}
+        Router::<Scene> {}
     }
 }

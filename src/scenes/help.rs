@@ -1,5 +1,8 @@
+use super::Scene;
+use crate::icons::*;
 use crate::rules::*;
 use dioxus::prelude::*;
+use dioxus_router::prelude::*;
 
 #[inline_props]
 fn DisplayTrigger<'a>(cx: Scope, trigger: &'a RuleTrigger) -> Element {
@@ -46,7 +49,6 @@ fn DisplayRule(cx: Scope, rule: Rule) -> Element {
             desc,
         } => render! {
             div {
-                class: "p-4",
                 p {
                     class: "text-sm",
                     DisplayTrigger { trigger: trigger }
@@ -80,51 +82,55 @@ pub fn Help(cx: Scope) -> Element {
         .collect();
 
     render! {
-        h2{
-            class: "p-4",
-            "Regler"
-        }
-        p {
-            class: "text-xs px-4 py-2",
-            "Treman är ett dryckesspel som går ut på att slå tärningar för att bestämma vem som dricker och hur mycket."
-        }
-        h3 {
-            class: "p-4",
-            "Vem är treman?"
-        }
-        p {
-            class: "text-xs px-4 py-2",
-            "Börja med att utse en spelare till 'treman', vem som är treman kommer att ändras under spelets gång. Bara en person kan vara treman i taget."
-        }
-        p {
-            class: "text-xs p-4 py-2",
-            "Följande leder till att en ny spelare blir 'treman':"
-        }
-        ul {
-            class: "list-disc text-xs px-4 py-2 mx-4",
-            li {"Om en ny person går med i spelet är hen nu treman."}
-            li {"Om en person lämnar bordet och kommer tillbaka (t.ex. går på toa eller hämtar mer dricka) är hen nu treman."}
-            li {"Skulle treman lämna bordet, blir föregående person treman igen."}
-            li {"Vissa tärningsslag kan också resultera i en ny treman."}
-        }
-        p {
-            class: "text-xs p-4 py-2",
-            "När en ny person blir treman skålar nya och gamla treman och tar vars en klunk."
-        }
-        h3 {
-            class: "p-4",
-            "Sen då?"
-        }
-        p {
-            class: "text-xs p-4 py-2",
-            "När ni valt treman kan spelet börja. En spelare slår tärningarna och ropar ut de regler som de slagit. En regel kan påverka en eller flera personer, se listan nedan, när alla påverkade har slutfört regeln slås tärningarna på nytt. Samma spelare fortsätter alltid att slå tärningarna tills dess att de slår 'Ingenting', då skickas tärningarna vidare medsols."
-        }
-        h3 {
-            class: "p-4",
-            "Regellista"
-        }
-        for r in rules {
-            DisplayRule { rule: r.clone() }
+        div {
+            class: "flex flex-col text-left gap-4 p-4 w-[100vmin] h-screen",
+            Link{
+                to: Scene::Game,
+                class: "w-6 h-6",
+                LeftArrowIcon{ }
+            }
+            h2{
+                "Regler"
+            }
+            p {
+                class: "text-xs",
+                "Treman är ett dryckesspel som går ut på att slå tärningar för att bestämma vem som dricker och hur mycket."
+            }
+            h3 {
+                "Vem är treman?"
+            }
+            p {
+                class: "text-xs",
+                "Börja med att utse en spelare till 'treman', vem som är treman kommer att ändras under spelets gång. Bara en person kan vara treman i taget."
+            }
+            p {
+                class: "text-xs",
+                "Följande leder till att en ny spelare blir 'treman':"
+            }
+            ul {
+                class: "list-disc text-xs mx-4", //FIXME px-4 py-2 mx-4",
+                li {"Om en ny person går med i spelet är hen nu treman."}
+                li {"Om en person lämnar bordet och kommer tillbaka (t.ex. går på toa eller hämtar mer dricka) är hen nu treman."}
+                li {"Skulle treman lämna bordet, blir föregående person treman igen."}
+                li {"Vissa tärningsslag kan också resultera i en ny treman."}
+            }
+            p {
+                class: "text-xs",
+                "När en ny person blir treman skålar nya och gamla treman och tar vars en klunk."
+            }
+            h3 {
+                "Sen då?"
+            }
+            p {
+                class: "text-xs",
+                "När ni valt treman kan spelet börja. En spelare slår tärningarna och ropar ut de regler som de slagit. En regel kan påverka en eller flera personer, se listan nedan, när alla påverkade har slutfört regeln slås tärningarna på nytt. Samma spelare fortsätter alltid att slå tärningarna tills dess att de slår 'Ingenting', då skickas tärningarna vidare medsols."
+            }
+            h3 {
+                "Regellista"
+            }
+            for r in rules {
+                DisplayRule { rule: r.clone() }
+            }
         }
     }
 }
