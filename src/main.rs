@@ -20,6 +20,6 @@ fn app(cx: Scope) -> Element {
     });
     use_shared_state_provider(cx, || Rule::BASE.to_vec());
     render! {
-        Help{}
+        Challange{}
     }
 }

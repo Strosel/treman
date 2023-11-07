@@ -1,23 +1,73 @@
 use dioxus::prelude::*;
+use std::cmp::Ordering;
+use tinyrand::{RandRange, StdRand};
+
+#[derive(Debug, Clone, Default, PartialEq)]
+struct ChallangeDice {
+    red: u8,
+    blue: u8,
+}
+
+fn spin_dice(cx: Scope) -> ChallangeDice {
+    let mut rng = use_shared_state::<StdRand>(cx).unwrap().write_silent();
+    let (mut red, mut blue) = (0, 0);
+    while red == blue {
+        red = rng.next_range(1..7_u16) as u8;
+        blue = rng.next_range(1..7_u16) as u8;
+    }
+    ChallangeDice { red, blue }
+}
+
+#[inline_props]
+fn DisplayDice(cx: Scope, dice: ChallangeDice) -> Element {
+    render! {
+        h1 {
+            class: "dice text-center",
+            span {class: "text-red-600", "{dice.red}"}
+            span {class: "text-blue-600", "{dice.blue}"}
+        }
+    }
+}
 
 pub fn Challange(cx: Scope) -> Element {
-    //TODO get dice state
-    let d = (5, 6);
+    let d = use_state(cx, ChallangeDice::default);
+
     render! {
         div {
             class: "flex justify-center items-center text-center",
             div {
                 class: "flex flex-col gap-4 p-4 w-[100vmin] h-screen",
                 h2 { class: "text-center", "Utmaning"}
-                h1 {
-                    class: "dice text-center",
-                    span {class: "text-red-600", "{d.0}"}
-                    span {class: "text-blue-600", "{d.1}"}
+
+                DisplayDice { dice: d.get().clone() }
+                match Ord::cmp(&d.red, &d.blue) {
+                    Ordering::Equal => render!{
+                        p { class: "grow", "Välj vars en tärning" }
+                    },
+                    Ordering::Less => render!{
+                        p { class: "grow", "Blå är ny Treman" }
+                    },
+                    Ordering::Greater => render!{
+                        p { class: "grow", "Röd är ny Treman" }
+                    },
                 }
-                p { class: "grow", "Välj vars en tärning" }
-                button {
-                    class: "bg-secondary rounded-md box-border w-full h-[15vh]",
-                    "Kör"
+
+                if d.red == d.blue {
+                    render!{
+                        button {
+                            class: "bg-secondary rounded-md box-border w-full h-[15vh]",
+                            onclick: move |_| d.set(spin_dice(cx)),
+                            "Kör"
+                        }
+                    }
+                } else {
+                    render!{
+                        button {
+                            class: "bg-secondary rounded-md box-border w-full h-[15vh]",
+                            onclick: move |_| {}, //TODO reroute
+                            "Ok"
+                        }
+                    }
                 }
             }
         }

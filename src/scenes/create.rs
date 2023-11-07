@@ -2,7 +2,8 @@ use crate::rules::*;
 use dioxus::prelude::*;
 
 pub fn Create(cx: Scope) -> Element {
-    let ty = use_state(cx, || RuleTrigger::Sum(2));
+    let trigger = use_state(cx, || RuleTrigger::Sum(2));
+    let name = use_state(cx, String::new);
 
     render! {
         div {
@@ -14,21 +15,21 @@ pub fn Create(cx: Scope) -> Element {
                     class: "flex gap-4 p-4 justify-center items-center",
                     input {
                         r#type: "radio", name: "rule", id:"sum", checked: true,
-                        oninput: move |_| ty.modify(|v| match v {
+                        oninput: move |_| trigger.modify(|v| match v {
                             RuleTrigger::Sum(_) => *v,
                             _ => RuleTrigger::Sum(2),
                         })
                     }
                     label {r#for: "sum", "Summa"}
                     input {r#type: "radio", name: "rule", id: "pair",
-                        oninput: move |_| ty.modify(|v| match v {
+                        oninput: move |_| trigger.modify(|v| match v {
                             RuleTrigger::Pair(..) => *v,
                             _ => RuleTrigger::Pair(2, 1),
                         })
                     }
                     label {r#for: "pair", "Par"}
                     input {r#type: "radio", name: "rule", id: "single",
-                        oninput: move |_| ty.modify(|v| match v {
+                        oninput: move |_| trigger.modify(|v| match v {
                             RuleTrigger::Single(_) => *v,
                             _ => RuleTrigger::Single(2),
                         })
@@ -36,18 +37,18 @@ pub fn Create(cx: Scope) -> Element {
                     label {r#for: "single", "En Tärning"}
                 }
 
-                match ty.get() {
+                match trigger.get() {
                     RuleTrigger::Sum(v) => render!{
                         button {
                             class: "font-mono text-center text-black text-xl",
-                            onclick: move |_| ty.modify(|&v| v.inc(false)),
+                            onclick: move |_| trigger.modify(|&v| v.inc(false)),
                             "{v}"
                         }
                     },
                     RuleTrigger::Single(v) => render!{
                         button {
                             class: "dice text-center text-black text-xl",
-                            onclick: move |_| ty.modify(|&v| v.inc(false)),
+                            onclick: move |_| trigger.modify(|&v| v.inc(false)),
                             "{v}"
                         }
                     },
@@ -56,12 +57,12 @@ pub fn Create(cx: Scope) -> Element {
                             class: "flex justify-center items-center",
                             button {
                                 class: "dice text-center text-black text-xl",
-                                onclick: move |_| ty.modify(|&v| v.inc(false)),
+                                onclick: move |_| trigger.modify(|&v| v.inc(false)),
                                 "{a}"
                             }
                             button {
                                 class: "dice text-center text-black text-xl",
-                                onclick: move |_| ty.modify(|&v| v.inc(true)),
+                                onclick: move |_| trigger.modify(|&v| v.inc(true)),
                                 "{b}"
                             }
                         }
@@ -69,10 +70,30 @@ pub fn Create(cx: Scope) -> Element {
                     _ => unreachable!("Kan inte skapa ny treman regel"),
                 }
 
-                input { r#type: "text", placeholder:"Regel" }
+                input {
+                    r#type: "text",
+                    placeholder:"Regel",
+                    value: name.get().as_str(),
+                    oninput: move |evt| name.set(evt.value.clone()),
+                }
                 div{ class: "grow" }
                 button {
                     class: "bg-secondary rounded-md box-border w-full h-[15vh]",
+                    onclick: move |_| {
+                        if !name.get().is_empty() {
+                            let rule = Rule::User {
+                                trigger: *trigger.get(),
+                                name: name.get().clone(),
+                            };
+                            use_shared_state::<Vec<Rule>>(cx)
+                                .unwrap()
+                                .write()
+                                .push(rule);
+                            //FIXME clear might not be neccecarry
+                            name.with_mut(String::clear);
+                            //TODO change screen
+                        }
+                    },
                     "Spara"
                 }
             }
