@@ -18,7 +18,10 @@ fn PlayChallange<'a>(
         }
         match Ord::cmp(&dice.0, &dice.1) {
             Ordering::Equal => render!{
-                p { class: "grow", "Välj vars en tärning" }
+                p {
+                    class: "grow",
+                    "Välj vars en tärning, den utmanade väljer först"
+                }
             },
             Ordering::Less => render!{
                 p { class: "grow", "Blå är ny Treman" }
@@ -31,7 +34,7 @@ fn PlayChallange<'a>(
         if dice.0 == dice.1 {
             render!{
                 button {
-                    class: "bg-secondary rounded-md box-border w-full h-[15vh]",
+                    class: "bg-secondary",
                     onclick: move |_| {
                         let mut rng = use_shared_state::<StdRand>(cx).unwrap().write_silent();
                         let (mut red, mut blue) = (0, 0);
@@ -48,7 +51,7 @@ fn PlayChallange<'a>(
         } else {
             render!{
                 NavButton {
-                    class: "bg-secondary rounded-md box-border w-full h-[15vh]",
+                    class: "bg-secondary",
                     to: Scene::Game,
                     "Ok"
                 }
@@ -64,13 +67,11 @@ pub fn Challange(cx: Scope) -> Element {
     render! {
         div {
             class: "flex flex-col gap-4 p-4 w-[100vmin] h-screen",
-            Link{
+            Link {
                 to: Scene::Game,
-                class: "w-6 h-6",
+                class: "icon",
                 LeftArrowIcon{ }
             }
-
-            h2 { class: "text-center", "Utmaning"}
 
             if **animate {
                 render!{

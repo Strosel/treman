@@ -38,7 +38,7 @@ fn PlayGame<'a>(
         if **dice == (6,6) {
             render! {
                 NavButton {
-                    class: "bg-secondary rounded-md box-border w-full h-[15vh] min-h-[15vh]",
+                    class: "bg-secondary",
                     to: Scene::Create,
                     "Jag har aldrig sett..."
                 }
@@ -48,7 +48,7 @@ fn PlayGame<'a>(
         if **dice == (1,2) || **dice == (2,1) {
             render! {
                 NavButton {
-                    class: "bg-secondary rounded-md box-border w-full h-[15vh] min-h-[15vh]",
+                    class: "bg-secondary",
                     to: Scene::Challange,
                     "Utmaning"
                 }
@@ -56,7 +56,7 @@ fn PlayGame<'a>(
         } else {
             render! {
                 button {
-                    class: "bg-primary rounded-md box-border w-full h-[15vh] min-h-[15vh]",
+                    class: "bg-primary",
                     onclick: move |_| {
                         let mut rng = use_shared_state::<StdRand>(cx).unwrap().write_silent();
                         dice.set((
@@ -79,9 +79,9 @@ pub fn Game(cx: Scope) -> Element {
     render! {
         div {
             class: "flex flex-col gap-4 p-4 w-[100vmin] h-screen",
-            Link{
+            Link {
                 to: Scene::Help,
-                class: "w-6 h-6 self-end",
+                class: "icon self-end",
                 QuestionMarkIcon { }
             }
 

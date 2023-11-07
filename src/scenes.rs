@@ -31,7 +31,7 @@ pub(self) fn AnimateDice<'a>(
         }
         div {class: "grow"}
         button {
-            class: "{button_color} rounded-md box-border w-full h-[15vh]",
+            class: "{button_color}",
             disabled: true,
             "{button_text}"
         }

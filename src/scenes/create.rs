@@ -10,9 +10,9 @@ pub fn Create(cx: Scope) -> Element {
     render! {
         div {
             class: "flex flex-col gap-4 p-4 w-[100vmin] h-screen",
-            Link{
+            Link {
                 to: Scene::Game,
-                class: "w-6 h-6",
+                class: "icon",
                 LeftArrowIcon{ }
             }
 
@@ -83,7 +83,7 @@ pub fn Create(cx: Scope) -> Element {
             }
             div{ class: "grow" }
             button {
-                class: "bg-secondary rounded-md box-border w-full h-[15vh]",
+                class: "bg-secondary",
                 disabled: name.get().is_empty(),
                 onclick: move |_| {
                     if !name.get().is_empty() {

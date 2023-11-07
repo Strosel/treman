@@ -29,7 +29,7 @@
     }
 
     button {
-        @apply text-base text-white;
+        @apply text-base text-white rounded-md box-border w-full h-[15vh] min-h-[15vh];
     }
 
     button:disabled {
@@ -42,6 +42,10 @@
 
     .dice {
         @apply font-dice;
+    }
+
+    .icon {
+        @apply w-[4vh] h-[4vh];
     }
 
     @font-face {

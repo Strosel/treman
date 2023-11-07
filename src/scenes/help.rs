@@ -83,9 +83,9 @@ pub fn Help(cx: Scope) -> Element {
     render! {
         div {
             class: "flex flex-col text-left gap-4 p-4 w-[100vmin] h-screen",
-            Link{
+            Link {
                 to: Scene::Game,
-                class: "w-6 h-6",
+                class: "icon",
                 LeftArrowIcon{ }
             }
             h2{
