@@ -1,74 +1,152 @@
 {
-  description = "Treman android build environment";
+  description = "Build a dioxus project";
+  # This flake is an emalgam of the trunk template from crane as well as the source of buildTrunkPackage
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs";
+    # Pinned version of nixpkgs
+    # Has correct version of both wasm-bindgen-cli and dioxus-cli
+    nixpkgs.url = "github:NixOS/nixpkgs/85f1ba3e51676fa8cc604a3d863d729026a6b8eb";
+
+    crane = {
+      url = "github:ipetkov/crane";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     flake-utils.url = "github:numtide/flake-utils";
 
-    gio.url = "github:gioui/gio";
-    gio.inputs.nixpkgs.follows = "nixpkgs";
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
   };
 
-  outputs = { self, nixpkgs, flake-utils, gio }:
-    flake-utils.lib.eachSystem
-      [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ]
-      (system:
-        let
-          pkgs = import nixpkgs {
-            inherit system;
-            config = {
-              permittedInsecurePackages = [
-                "python-2.7.18.6"
-              ];
-            };
-          };
+  outputs = { self, nixpkgs, crane, flake-utils, rust-overlay, ... }:
+    flake-utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [ (import rust-overlay) ];
+        };
 
-          gio-shell = gio.devShells.${system}.default;
+        inherit (pkgs) lib;
 
-          gogio = pkgs.buildGoModule {
-            inherit (gio-shell) ANDROID_SDK_ROOT JAVA_HOME nativeBuildInputs;
-            name = "gogio";
+        rustToolchain = pkgs.rust-bin.stable.latest.default.override {
+          # Set the build targets supported by the toolchain,
+          # wasm32-unknown-unknown is required for trunk
+          targets = [ "wasm32-unknown-unknown" ];
+        };
+        craneLib = (crane.mkLib pkgs).overrideToolchain rustToolchain;
 
-            buildInputs = gio-shell.nativeBuildInputs;
-            src = pkgs.fetchFromSourcehut {
-              owner = "~eliasnaur";
-              repo = "gio-cmd";
-              rev = "0a86898b418418e80fba9c12e71dfdf764bb01d6";
-              hash = "sha256-6e51+ZHflWaMiB0HPhVnRsLPbHV3zQBMLkpizu/rzLo=";
-            };
+        # When filtering sources, we want to allow assets other than .rs files
+        src = lib.cleanSourceWith {
+          src = ./.; # The original, unfiltered source
+          filter = path: type:
+            (lib.hasSuffix "\.html" path) ||
+            (lib.hasSuffix "\.css" path) ||
+            (lib.hasSuffix "\.js" path) ||
+            # Example of a folder for images, icons, etc
+            (lib.hasInfix "assets/" path) ||
+            (lib.hasInfix "public/" path) ||
+            # Default filter from crane (allow .rs files)
+            (craneLib.filterCargoSources path type)
+          ;
+        };
 
-            vendorHash = "sha256-2LQCFYyEletx+FswLV1Ui506qG62yHUKGr5vP5Y/b/s=";
-            doCheck = false;
-          };
+        # Common arguments can be set here to avoid repeating them later
+        commonArgs = {
+          inherit src;
+          strictDeps = true;
+          # We must force the target, otherwise cargo will attempt to use your native target
+          CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
 
-          minsdk = "29";
-        in
-        {
-          devShells.default = pkgs.mkShell
-            {
-              inherit (gio-shell) ANDROID_SDK_ROOT JAVA_HOME nativeBuildInputs;
+          buildInputs = [
+            # Add additional build inputs here
+          ] ++ lib.optionals pkgs.stdenv.isDarwin [
+            # Additional darwin specific inputs can be set here
+            pkgs.libiconv
+          ];
+        };
 
-              buildInputs = [ gogio ] ++ (with pkgs;
-                [ go gum apksigner ]);
-
-              shellHook = ''
-                build () {
-                  local V=$(gum input --prompt 'Version? ' --placeholder '7')
-
-                  gum spin --spinner dot --title "Building..." -- \
-                  gogio -target android -icon assets/meta/icon.png -version $V -minsdk ${minsdk} .
-
-                  apksigner sign --ks ~/.android/sign.keystore treman.apk
-                }
-
-                stream () {
-                  gum spin --spinner dot --title "Building..." -- \
-                  gogio -target android -icon assets/meta/icon.png -minsdk ${minsdk} .
-                  adb uninstall com.github.treman > /dev/null 2>&1
-                  adb install treman.apk
-                }
-              '';
-            };
+        # Build *just* the cargo dependencies, so we can reuse
+        # all of that work (e.g. via cachix) when running in CI
+        cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
+          # You cannot run cargo test on a wasm build
+          doCheck = false;
         });
+
+        # Build the actual crate itself, reusing the dependency
+        # artifacts from above.
+        # This derivation is a directory you can put on a webserver.
+        inherit (pkgs) binaryen tailwindcss;
+        my-app = craneLib.mkCargoDerivation (commonArgs // {
+          inherit cargoArtifacts;
+
+          # Force dioxus to not download dependencies, but use the provided version 
+          preConfigure = ''
+            HOME=$(pwd)
+            XDG_DATA_HOME=$HOME/.local/share
+
+            mkdir -p $HOME/.local/share/dioxus \
+              $HOME/Library/Application\ Support
+
+            ln -sv $HOME/.local/share/dioxus \
+              $HOME/Library/Application\ Support
+
+            ln -s ${binaryen} $HOME/.local/share/dioxus/binaryen
+            ln -s ${tailwindcss} $HOME/.local/share/dioxus/tailwindcss
+          '';
+
+          buildPhaseCargoCommand = ''
+            local profileArgs=""
+            if [[ "$CARGO_PROFILE" == "release" ]]; then
+              profileArgs="--release"
+            fi
+
+            tailwindcss -i ./input.css -o ./public/tailwind.css
+            dx build $profileArgs
+          '';
+
+          installPhaseCommand = ''
+            cp -r dist $out
+          '';
+
+          # Installing artifacts on a distributable dir does not make much sense
+          doInstallCargoArtifacts = false;
+
+          nativeBuildInputs = [
+            pkgs.dioxus-cli
+            pkgs.wasm-bindgen-cli
+            binaryen
+            pkgs.nodejs
+            tailwindcss
+          ];
+        });
+      in
+      {
+        checks = {
+          # Build the crate as part of `nix flake check` for convenience
+          inherit my-app;
+
+          # Run clippy (and deny all warnings) on the crate source,
+          # again, reusing the dependency artifacts from above.
+          #
+          # Note that this is done as a separate derivation so that
+          # we can block the CI if there are issues here, but not
+          # prevent downstream consumers from building our crate by itself.
+          my-app-clippy = craneLib.cargoClippy (commonArgs // {
+            inherit cargoArtifacts;
+            cargoClippyExtraArgs = "--all-targets -- --deny warnings";
+          });
+
+          # Check formatting
+          my-app-fmt = craneLib.cargoFmt {
+            inherit src;
+          };
+        };
+
+        packages.default = my-app;
+      });
 }

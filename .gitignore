@@ -1,8 +1,6 @@
-sprites.piskel
-*.apk
-*.ipa
-*.idsig
-Treman
-.DS_Store
-result
-pages
+/target
+/dist
+
+result*
+
+tailwind.css

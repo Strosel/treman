@@ -1,0 +1,33 @@
+{
+  "name": "Treman",
+  "icons": [
+    {
+      "src": "icon_192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icon_512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "icon_512.png",
+      "type": "image/png",
+      "sizes": "any",
+      "purpose": "any"
+    }
+  ],
+  "start_url": "/treman/",
+  "display": "standalone",
+  "display_override": ["window-control-overlay", "standalone"],
+  "scope": "/treman/",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "short_name": "Treman",
+  "description": "Tärningarna bestämmer vem som dricker och vem som däckar i denna studentfavorit, nu i ett lätthanterat appformat!",
+  "dir": "ltr",
+  "lang": "se",
+  "orientation": "portrait"
+}
