@@ -83,11 +83,22 @@ pub fn Help(cx: Scope) -> Element {
     render! {
         div {
             class: "flex flex-col text-left gap-4 p-4 w-[100vmin] h-screen",
-            Link {
-                to: Scene::Game,
-                class: "icon",
-                LeftArrowIcon{ }
+            div {
+                class: "flex flex-row h-[4vh] w-100 justify-between items-center",
+
+                Link {
+                    to: Scene::Game,
+                    class: "icon",
+                    LeftArrowIcon { }
+                }
+
+                a {
+                    class: "icon",
+                    href: "https://github.com/strosel/treman",
+                    GitHubIcon { }
+                }
             }
+
             h2{
                 "Regler"
             }
