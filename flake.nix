@@ -105,6 +105,8 @@
               profileArgs="--release"
             fi
 
+            version=$(dasel -f Cargo.toml 'package.version' | tr -d "'")
+            dasel put -f ./public/manifest.json -s '.id' -v "?v=$version"
             tailwindcss -i ./input.css -o ./public/tailwind.css
             dx build $profileArgs
           '';
@@ -122,6 +124,7 @@
             binaryen
             pkgs.nodejs
             tailwindcss
+            pkgs.dasel
           ];
         });
       in
