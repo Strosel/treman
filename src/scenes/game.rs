@@ -123,7 +123,7 @@ fn PlayGame<'a>(
 }
 
 pub fn Game(cx: Scope) -> Element {
-    let dice = use_state(cx, || (6, 6));
+    let dice = use_state(cx, || (0, 0));
     let animate = use_state(cx, || false);
     let overlay = use_state(cx, || OverlayState::Hidden);
 
@@ -131,7 +131,7 @@ pub fn Game(cx: Scope) -> Element {
         if **overlay != OverlayState::Hidden {
             render! {
                 div {
-                    class: "overlay bg-neutral-100 rounded-lg shadow-2xl p-4 min-h-[40vh] text-left",
+                    class: "overlay bg-neutral-100 rounded-lg shadow-2xl p-4 min-h-[40vh] text-left flex flex-col justify-center",
                     match **overlay {
                         OverlayState::Install => render!{
                             p {
