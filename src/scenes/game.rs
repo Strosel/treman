@@ -75,14 +75,64 @@ fn PlayGame<'a>(
 pub fn Game(cx: Scope) -> Element {
     let dice = use_state(cx, || (0, 0));
     let animate = use_state(cx, || false);
+    let overlay = use_state(cx, || false);
 
     render! {
+        if **overlay {
+            render! {
+                div {
+                    class: "overlay bg-neutral-100 rounded-lg shadow-2xl p-4 min-h-[40vh] text-left",
+                    p {
+                        class: "text-sm mb-2",
+                        "Installera Treman 📲"
+                    }
+                    p {
+                        class: "text-xs",
+                        "Om du vill spela Treman även offline kan du installera appen till din telefon."
+                    }
+                    ol {
+                        class: "list-inside list-decimal my-4 text-xs",
+                        li {
+                            class: "w-fit",
+                            "Välj 'dela' (ser ut som ikonerna här)"
+                            div {
+                                class : "flex gap-6 justify-evenly",
+                                span { class: "icon", ShareIcon { } }
+                                span { class: "icon", EllipsisH { } }
+                                span { class: "icon", EllipsisV { } }
+                            }
+                        }
+                        li { "Välj 'Lägg till på hemskärm' eller 'Installera'." }
+                        li { "Njut av Treman offline 🎲🍺" }
+                    }
+                }
+            }
+        }
+
         div {
-            class: "flex flex-col gap-4 p-4 w-[100vmin] h-screen",
-            Link {
-                to: Scene::Help,
-                class: "icon self-end",
-                QuestionMarkIcon { }
+            class: "z-0 flex flex-col gap-4 p-4 w-[100vmin] h-screen",
+            onclick: move |_| if **overlay { overlay.set(false) },
+            div {
+                class: "flex flex-row-reverse h-[4vh] w-100 justify-between items-center",
+
+                Link{
+                    to: Scene::Help,
+                    class: "icon",
+                    QuestionMarkIcon { }
+                }
+
+                button {
+                    id: "install",
+                    class: "bg-secondary pl-3 pr-2 w-fit h-fit min-h-fit text-sm inline-flex items-center gap-2",
+                    onclick: move |_| overlay.set(true),
+                    "Installera"
+                    span{
+                        class: "icon",
+                        DownloadIcon { }
+                    }
+                }
+
+                span { /* empty span makes the install/update button centered */ }
             }
 
             if **animate {

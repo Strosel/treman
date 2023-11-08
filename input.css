@@ -40,6 +40,10 @@
         @apply text-base;
     }
 
+    ol > li {
+        @apply my-2;
+    }
+
     .dice {
         @apply font-dice;
     }
@@ -99,4 +103,20 @@
         background-attachment: local, local, scroll, scroll;
     }
 
+    .overlay {
+        @apply z-10 absolute;
+        top: 15vh;
+        left: 10vw;
+        right: 10vw;
+    }
+
+    .overlay + div {
+        @apply z-0 blur-sm;
+    }
+
+    @media (display-mode: standalone) {
+        #install {
+            display: none;
+        }
+    }
 }
