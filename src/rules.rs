@@ -68,52 +68,8 @@ impl Rule {
     pub const BASE: &[Self] = &[
         Rule::Base {
             name: "Treman",
-            desc: "Treman dricker",
+            desc: "Treman dricker.",
             trigger: RuleTrigger::Treman,
-        },
-        Rule::Base {
-            name: "Krig",
-            desc: "Välj en annan spelare. Ni är nu i krig, dricker den ena så dricker bägge",
-            trigger: RuleTrigger::Pair(1, 1),
-        },
-        Rule::Base {
-            name: "Utmaning",
-            desc:
-                "Välj en annan spelare och slå vars en tärning. Den som slår högst blir ny treman.",
-            trigger: RuleTrigger::Pair(1, 2),
-        },
-        Rule::Base {
-            name: "En ferrari",
-            desc: "Sist att låtsas köra bil dricker. (\"Dark humour\" variant finns)",
-            trigger: RuleTrigger::Pair(1, 4),
-        },
-        Rule::Base {
-            name: "Ny Treman",
-            desc: "Grattis! Du är nu treman",
-            trigger: RuleTrigger::Pair(3, 3),
-        },
-        Rule::Base {
-            name: "Jag har aldrig sett...",
-            desc: concat!(
-                "Häfv resten av din enhet och skapa en ny regel.\n",
-                "Eller dela ut 6+6 klunkar, (6 klunkar till två personer eller 12 till en person)",
-            ),
-            trigger: RuleTrigger::Pair(6, 6),
-        },
-        Rule::Base {
-            name: "Dela ut 2+2 klunkar",
-            desc: "Dela ut 2 klunkar till två personer eller 4 till en person",
-            trigger: RuleTrigger::Pair(2, 2),
-        },
-        Rule::Base {
-            name: "Dela ut 4+4 klunkar",
-            desc: "Dela ut 4 klunkar till två personer eller 8 till en person",
-            trigger: RuleTrigger::Pair(4, 4),
-        },
-        Rule::Base {
-            name: "Dela ut 5+5 klunkar",
-            desc: "Dela ut 5 klunkar till två personer eller 10 till en person",
-            trigger: RuleTrigger::Pair(5, 5),
         },
         Rule::Base {
             name: "Seven ahead",
@@ -129,6 +85,50 @@ impl Rule {
             name: "Finger på näsan",
             desc: "Sist att sätta fingret på näsan dricker.",
             trigger: RuleTrigger::Sum(11),
+        },
+        Rule::Base {
+            name: "Krig",
+            desc: "Välj en annan spelare. Ni är nu i krig, dricker den ena så dricker bägge.",
+            trigger: RuleTrigger::Pair(1, 1),
+        },
+        Rule::Base {
+            name: "Utmaning",
+            desc:
+                "Välj en annan spelare och slå vars en tärning. Den som slår högst blir ny Treman.",
+            trigger: RuleTrigger::Pair(1, 2),
+        },
+        Rule::Base {
+            name: "En ferrari",
+            desc: "Sist att låtsas köra bil dricker. (\"Dark humour\" variant finns)",
+            trigger: RuleTrigger::Pair(1, 4),
+        },
+        Rule::Base {
+            name: "Ny Treman",
+            desc: "Grattis! Du är nu Treman!",
+            trigger: RuleTrigger::Pair(3, 3),
+        },
+        Rule::Base {
+            name: "Dela ut 2+2 klunkar",
+            desc: "Dela ut 2 klunkar till två personer eller 4 till en person.",
+            trigger: RuleTrigger::Pair(2, 2),
+        },
+        Rule::Base {
+            name: "Dela ut 4+4 klunkar",
+            desc: "Dela ut 4 klunkar till två personer eller 8 till en person.",
+            trigger: RuleTrigger::Pair(4, 4),
+        },
+        Rule::Base {
+            name: "Dela ut 5+5 klunkar",
+            desc: "Dela ut 5 klunkar till två personer eller 10 till en person.",
+            trigger: RuleTrigger::Pair(5, 5),
+        },
+        Rule::Base {
+            name: "Jag har aldrig sett...",
+            desc: concat!(
+                "Häfv resten av din enhet och skapa en ny regel.\n",
+                "Eller dela ut 6+6 klunkar, d.v.s. 6 klunkar till två personer eller 12 till en person.",
+            ),
+            trigger: RuleTrigger::Pair(6, 6),
         },
     ];
 }
