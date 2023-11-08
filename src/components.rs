@@ -1,4 +1,4 @@
-use crate::scenes::Scene;
+use crate::{rules::*, scenes::Scene};
 use dioxus::prelude::*;
 
 mod fontawesome;
@@ -37,5 +37,41 @@ pub fn NavButton<'a>(cx: Scope<'a, LinkProps<'a>>) -> Element<'a> {
             },
             &cx.props.children
         }
+    }
+}
+
+#[inline_props]
+pub fn DisplayTrigger<'a>(cx: Scope, trigger: &'a RuleTrigger) -> Element {
+    match trigger {
+        RuleTrigger::Sum(v) => render! {
+            span {
+                span {
+                    class: "dice inline-block align-middle",
+                    "0+0"
+                }
+                span {
+                    class: "inline-block align-middle",
+                    "={v}"
+                }
+            }
+        },
+        RuleTrigger::Pair(a, b) => render! {
+            span {
+                class: "dice inline-block align-middle",
+                "{a}&{b}"
+            }
+        },
+        RuleTrigger::Single(v) => render! {
+            span {
+                class: "dice inline-block align-middle",
+                "{v}"
+            }
+        },
+        RuleTrigger::Treman => render! {
+            span {
+                class: "dice inline-block align-middle",
+                "3"
+            }
+        },
     }
 }

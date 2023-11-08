@@ -4,42 +4,6 @@ use crate::rules::*;
 use dioxus::prelude::*;
 
 #[inline_props]
-fn DisplayTrigger<'a>(cx: Scope, trigger: &'a RuleTrigger) -> Element {
-    match trigger {
-        RuleTrigger::Sum(v) => render! {
-            span {
-                span {
-                    class: "dice inline-block align-middle",
-                    "0+0"
-                }
-                span {
-                    class: "inline-block align-middle",
-                    "={v}"
-                }
-            }
-        },
-        RuleTrigger::Pair(a, b) => render! {
-            span {
-                class: "dice inline-block align-middle",
-                "{a}&{b}"
-            }
-        },
-        RuleTrigger::Single(v) => render! {
-            span {
-                class: "dice inline-block align-middle",
-                "{v}"
-            }
-        },
-        RuleTrigger::Treman => render! {
-            span {
-                class: "dice inline-block align-middle",
-                "3"
-            }
-        },
-    }
-}
-
-#[inline_props]
 fn DisplayRule(cx: Scope, rule: Rule) -> Element {
     match rule {
         Rule::Base {
@@ -107,33 +71,33 @@ pub fn Help(cx: Scope) -> Element {
                 "Treman är ett dryckesspel som går ut på att slå tärningar för att bestämma vem som dricker och hur mycket."
             }
             h3 {
-                "Vem är treman?"
+                "Vem är Treman?"
             }
             p {
                 class: "text-xs",
-                "Börja med att utse en spelare till 'treman', vem som är treman kommer att ändras under spelets gång. Bara en person kan vara treman i taget."
+                "Börja med att utse en spelare till 'Treman', vem som är Treman kommer att ändras under spelets gång. Bara en person kan vara Treman i taget."
             }
             p {
                 class: "text-xs",
-                "Följande leder till att en ny spelare blir 'treman':"
+                "Följande leder till att en ny spelare blir 'Treman':"
             }
             ul {
                 class: "list-disc text-xs mx-4",
-                li {"Om en ny person går med i spelet är hen nu treman."}
-                li {"Om en person lämnar bordet och kommer tillbaka (t.ex. går på toa eller hämtar mer dricka) är hen nu treman."}
-                li {"Skulle treman lämna bordet, blir föregående person treman igen."}
-                li {"Vissa tärningsslag kan också resultera i en ny treman."}
+                li {"Om en ny person går med i spelet är hen nu Treman."}
+                li {"Om en person lämnar bordet och kommer tillbaka (t.ex. går på toa eller hämtar mer dricka) är hen nu Treman."}
+                li {"Skulle Treman lämna bordet, blir föregående person Treman igen."}
+                li {"Vissa tärningsslag kan också resultera i en ny Treman."}
             }
             p {
                 class: "text-xs",
-                "När en ny person blir treman skålar nya och gamla treman och tar vars en klunk."
+                "När en ny person blir Treman skålar nya och gamla Treman och tar vars en klunk."
             }
             h3 {
                 "Sen då?"
             }
             p {
                 class: "text-xs",
-                "När ni valt treman kan spelet börja. En spelare slår tärningarna och ropar ut de regler som de slagit. En regel kan påverka en eller flera personer, se listan nedan, när alla påverkade har slutfört regeln slås tärningarna på nytt. Samma spelare fortsätter alltid att slå tärningarna tills dess att de slår 'Ingenting', då skickas tärningarna vidare medsols."
+                "När ni valt Treman kan spelet börja. En spelare slår tärningarna och ropar ut de regler som de slagit. En regel kan påverka en eller flera personer, se listan nedan, när alla påverkade har slutfört regeln slås tärningarna på nytt. Samma spelare fortsätter alltid att slå tärningarna tills dess att de slår 'Ingenting', då skickas tärningarna vidare medsols."
             }
             h3 {
                 "Regellista"
